@@ -7,24 +7,23 @@ cc.Class({
 
     properties: {
         // 参考分辨率  W: 640 H: 1280
-        
         elementPathLineX_1: {
-            default: 0,
+            default: -240,
             type: cc.Integer,
             tooltip: '元素第一条路径线相对于背景中心锚点的X坐标'
         },
         elementPathLineX_2: {
-            default: 0,
+            default: -80,
             type: cc.Integer,
             tooltip: '元素第二条路径线相对于背景中心锚点的X坐标'
         },
         elementPathLineX_3: {
-            default: 0,
+            default: 80,
             type: cc.Integer,
             tooltip: '元素第三条路径线相对于背景中心锚点的X坐标'
         },
         elementPathLineX_4: {
-            default: 0,
+            default: 240,
             type: cc.Integer,
             tooltip: '元素第四条路径线相对于背景中心锚点的X坐标'
         },
@@ -32,7 +31,8 @@ cc.Class({
             default: 0,
             type: cc.Integer,
             tooltip: '元素基准线相对于背景中心锚点的Y坐标'
-        }
+        },
+        
     },
 
     onLoad: function () {

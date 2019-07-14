@@ -10,11 +10,10 @@ cc.Class({
     },
 
     onLoad: function () {
-      
     },
 
     start: function () {
-
+        this.startSinglePlayerGame();
     },
 
     update: function (dt) {
