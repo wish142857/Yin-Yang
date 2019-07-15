@@ -46,7 +46,8 @@ cc.Class({
     },
 
     start: function () {
-
+        this.paths = [, this.elementPathLineX_1, this.elementPathLineX_2, 
+            this.elementPathLineX_3, this.elementPathLineX_4];
     },
 
     update: function (dt) {

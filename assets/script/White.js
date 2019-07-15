@@ -2,9 +2,9 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        pathNumber: {
+        /*pathNumber: {
             default: 0,
             type: cc.Integer
-        }
+        },*/
     }
 });

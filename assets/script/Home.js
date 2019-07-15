@@ -13,6 +13,7 @@ cc.Class({
     },
 
     start: function () {
+        // 测试用途
         this.startSinglePlayerGame();
     },
 

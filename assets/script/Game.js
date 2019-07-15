@@ -18,7 +18,7 @@ cc.Class({
             default: null,
             type: cc.Node
         },    
-        path_1: {
+        bg: {
             default: null,
             type: cc.Node
         },
@@ -34,6 +34,7 @@ cc.Class({
     },
 
     onLoad: function () {
+        cc.log("loaded");
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     },
 
@@ -42,22 +43,43 @@ cc.Class({
     },
 
     start: function () {
+        
         // 引用全局数据
         this.data = cc.find('DataManager').getComponent('DataManager');
         // 引用全局动画
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
+        
+        this.bg = this.node.getChildByName('Background');
         // 左右元素初始化
         this.lElementNode = this.node.getChildByName('Black');
         this.rElementNode = this.node.getChildByName('White');
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
+        this.lElementNode.pathNumber = 2;
+        this.lElementNode.colorId = 0;
+        this.rElementNode.pathNumber = 3;
+        this.rElementNode.colorId = 1;
         // 左右元素开始旋转
         this.animation.playSpin(this.lElementNode);
         this.animation.playSpin(this.rElementNode);
     },
 
     update: function (dt) {
-        //this.path_1.y++;
+        for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
+            let childNode = this.bg.children[i];
+            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY) {
+                if(childNode.index === this.lElementNode.pathNumber) {
+                    if(childNode.colorId !== -1 && childNode.colorId !== this.lElementNode.colorId) {                        
+                        //this.gameOver();
+                    }
+                }
+                if(childNode.index === this.rElementNode.pathNumber) {
+                    if(childNode.colorId !== -1 && childNode.colorId !== this.rElementNode.colorId) {
+                        //this.gameOver();
+                    }
+                }
+            }                   
+        }
     },
 
     leftShift: function () {
@@ -95,13 +117,15 @@ cc.Class({
         // *** 进行交换 ***
         // 播放动画
         if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
-            this.animation.playSwitch(this.lElementNode, this.rElementNode, 
-                this.rElementNode.x, this.lElementNode.x);
-            
-            // 位置交换
-            //var tempInt = this.lElementNode.x;
-            //this.lElementNode.x = this.rElementNode.x;
-            //this.rElementNode.x = tempInt;
+            var posX1 = this.data.paths[this.rElementNode.pathNumber];
+            var posX2 = this.data.paths[this.lElementNode.pathNumber];
+            cc.log(posX1);
+            cc.log(posX2);
+            this.animation.playSwitch(this.lElementNode, this.rElementNode, posX1, posX2);            
+            // 赛道编号交换
+            var tempNum = this.lElementNode.pathNumber;
+            this.lElementNode.pathNumber = this.rElementNode.pathNumber;
+            this.rElementNode.pathNumber = tempNum;
             // 引用交换
             var tempNode = this.lElementNode;
             this.lElementNode = this.rElementNode;
@@ -109,6 +133,7 @@ cc.Class({
         }      
     },
 
+    // 测试使用
     onKeyDown (event) {      
         switch(event.keyCode) {
             case cc.macro.KEY.a:
