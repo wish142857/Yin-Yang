@@ -10,6 +10,18 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        score: {                            // 游戏分数
+            default: 0,
+            type: cc.Integer
+        },
+        bg: {                               // 背景结点引用
+            default: null,
+            type: cc.Node
+        },
+        scoreNode: {                        // 分数栏结点引用
+            default: null,
+            type: cc.Node
+        },
         lElementNode: {                     // 左元素节点
             default: null,
             type: cc.Node
@@ -18,15 +30,11 @@ cc.Class({
             default: null,
             type: cc.Node
         },    
-        bg: {
-            default: null,
-            type: cc.Node
-        },
         data: {                             // 全局数据
             default: null,
             type: DataManager
         },
-        animation: {
+        animation: {                        // 全局动画
             default: null,
             type: AnimationManager
         }
@@ -48,7 +56,7 @@ cc.Class({
         this.data = cc.find('DataManager').getComponent('DataManager');
         // 引用全局动画
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
-        
+        // 引用背景结点
         this.bg = this.node.getChildByName('Background');
         // 左右元素初始化
         this.lElementNode = this.node.getChildByName('Black');
@@ -62,6 +70,10 @@ cc.Class({
         // 左右元素开始旋转
         this.animation.playSpin(this.lElementNode);
         this.animation.playSpin(this.rElementNode);
+        // 分数栏初始化
+        this.score = 0;
+        this.scoreNode = this.node.getChildByName('Score');
+        this.scoreNode.getComponent(cc.Label).string = this.score;
     },
 
     update: function (dt) {
@@ -80,6 +92,12 @@ cc.Class({
                 }
             }                   
         }
+    },
+
+    increaseScore: function () {
+        // *** 增加分数 ***
+        this.score = this.score + 1;
+        this.scoreNode.getComponent(cc.Label).string = this.score;
     },
 
     leftShift: function () {
@@ -145,6 +163,9 @@ cc.Class({
             case cc.macro.KEY.s:
                 this.switch();
                 break;
+            case cc.macro.KEY.p:
+                this.increaseScore();
+                break;
             default:
                 break;
         }
@@ -155,17 +176,27 @@ cc.Class({
         return false;
     },
 
-    gameOver: function() {
-        // *** 游戏结束 ***
-        cc.director.loadScene('game');
-    },
-
     gamePause: function() {
         // *** 游戏暂停 ***
         if (cc.director.isPaused())
             cc.director.resume();
         else
             cc.director.pause();
+    },
+
+    gameContinue: function() {
+        // *** 游戏继续 ***
+        cc.log('gameContinue');
+    },
+
+    gameRestart: function() {
+        // *** 游戏重开 ***
+        cc.log('gameRestart');
+    },
+
+    gameOver: function() {
+        // *** 游戏结束 ***
+        cc.director.loadScene('game');
     },
 
     returnHome: function() {

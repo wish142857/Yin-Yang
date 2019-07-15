@@ -86,9 +86,9 @@ cc.Class({
             this.lengthRecorder -= this.totalLength;
             refresh = true;
         }
-        for(let i = 0; i < 4; i++) {
+        /*for(let i = 0; i < 4; i++) {
             this.currentColor[i] = -1;
-        }
+        }*/
         var childCount = this.node.childrenCount;
         //cc.log(childCount);
         // 从后向前遍历！

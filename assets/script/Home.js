@@ -13,28 +13,38 @@ cc.Class({
     },
 
     start: function () {
-        // 测试用途
-        this.startSinglePlayerGame();
+        // this.startSinglePlayerGame();
     },
 
     update: function (dt) {
 
     },
 
-    startSinglePlayerGame: function () {
-        // *** 开始单人游戏 ***
+
+    startGame: function () {
+        // *** 开始游戏 ***
         cc.director.loadScene('game');
     },
 
-    startMultiPlayerGame: function () {
-        // *** 开始多人游戏 ***
+    showIntroduction: function () {
+        // *** 游戏介绍 ***
+        cc.log('showIntroduction');
+
     },
 
     showRankingList: function() {
-        // *** 显示排行榜 ***
+        // *** 显示排行 ***
+        cc.log('showRankingList');
     },
 
     showSettingInterface: function() {
         // *** 显示设置界面 ***
+        cc.log('showSettingInterface');
+    },
+
+    exitGame: function () {
+        // *** 退出游戏 ***
+        cc.log('exitGame');
     }
+
 });
