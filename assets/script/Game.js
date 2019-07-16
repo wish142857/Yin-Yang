@@ -79,8 +79,11 @@ cc.Class({
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // 引用背景节点
         this.bg = this.node.getChildByName('Background');
+<<<<<<< HEAD
         // 引用暂停界面阴影节点
         this.shade = this.node.getChildByName('Shade');
+=======
+>>>>>>> a6b884fa4cc5d55d1a008e4cbf8c8531b53683d5
         // 引用左右元素
         this.lElementNode = this.node.getChildByName('Black');
         this.rElementNode = this.node.getChildByName('White');
