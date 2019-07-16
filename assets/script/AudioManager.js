@@ -6,6 +6,9 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        isMute: {                     // 是否静音
+            default: false
+        },
         current: {                    // 当前背景音乐ID
             default: 0,
             type: cc.Integer
@@ -38,21 +41,35 @@ cc.Class({
         cc.game.removePersistRootNode(this.node);
     },
 
- 
     playMusic: function (clip) {
         // *** 播放音乐 ***
         // （背景音乐，循环，单例）
         cc.audioEngine.stop(this.current);
-        this.current = cc.audioEngine.play(clip, true, this.musicVolume);
+        if (this.isMute)
+            this.current = cc.audioEngine.play(clip, true, 0);
+        else
+            this.current = cc.audioEngine.play(clip, true, this.musicVolume);
     },
 
     playEffect: function (clip) {
         // *** 播放音效 ***
         // （游戏音效，非循环，非单例）
-        cc.audioEngine.play(clip, false, this.effectVolume);
+        if (this.isMute)
+            cc.audioEngine.play(clip, false, 0);
+        else
+            cc.audioEngine.play(clip, false, this.effectVolume);
     },
 
-        
+    switchMute: function (isMute) {
+        this.isMute = isMute;
+        if (this.isMute) {
+            cc.audioEngine.setVolume(this.current, 0);
+        }
+        else {
+            cc.audioEngine.setVolume(this.current, this.musicVolume);
+        }
+    },
+
     pause: function() {
         // *** 暂停音乐 ***
         cc.audioEngine.pause(this.current);
@@ -73,7 +90,8 @@ cc.Class({
         if ((volume < 0) || (volume > 1))
             return;
         this.musicVolume = volume;
-        cc.audioEngine.setVolume(this.current, this.musicVolume);
+        if(!this.isMute)
+            cc.audioEngine.setVolume(this.current, this.musicVolume);
     },
 
     getEffectVolume: function() {
@@ -87,5 +105,4 @@ cc.Class({
             return;
         this.effectVolume = volume;
     }
-
 });

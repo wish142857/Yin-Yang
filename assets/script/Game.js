@@ -4,7 +4,9 @@
 
 
 var DataManager = require('DataManager');
+var AudioManager = require('AudioManager');
 var AnimationManager = require('AnimationManager');
+
 
 cc.Class({
     extends: cc.Component,
@@ -14,6 +16,9 @@ cc.Class({
             default: 0,
             type: cc.Integer
         },
+        isPaused: {                         // 是否暂停
+            default: false,
+        },
         bg: {                               // 背景结点引用
             default: null,
             type: cc.Node
@@ -22,19 +27,23 @@ cc.Class({
             default: null,
             type: cc.Node
         },
-        lElementNode: {                     // 左元素节点
+        lElementNode: {                     // 左元素节点引用
             default: null,
             type: cc.Node
         },
-        rElementNode: {                     // 右元素节点
+        rElementNode: {                     // 右元素节点引用
             default: null,
             type: cc.Node
         },    
-        data: {                             // 全局数据
+        data: {                             // 全局数据引用
             default: null,
             type: DataManager
         },
-        animation: {                        // 全局动画
+        audio: {                            // 全局音频引用
+            default: null,
+            type: AudioManager
+        },
+        animation: {                        // 全局动画引用
             default: null,
             type: AnimationManager
         }
@@ -51,9 +60,13 @@ cc.Class({
     },
 
     start: function () {
-        
+        // 游戏数据初始化
+        this.score = 0;
+        this.isPaused = false;
         // 引用全局数据
         this.data = cc.find('DataManager').getComponent('DataManager');
+        // 引用全局音频
+        this.audio = cc.find('AudioManager').getComponent('AudioManager');
         // 引用全局动画
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // 引用背景结点
@@ -67,16 +80,21 @@ cc.Class({
         this.lElementNode.colorId = 0;
         this.rElementNode.pathNumber = 3;
         this.rElementNode.colorId = 1;
-        // 左右元素开始旋转
         this.animation.playSpin(this.lElementNode);
         this.animation.playSpin(this.rElementNode);
         // 分数栏初始化
-        this.score = 0;
         this.scoreNode = this.node.getChildByName('Score');
         this.scoreNode.getComponent(cc.Label).string = this.score;
+        // 初始化音乐按钮（承接全局）
+        this.switchMute(this.audio.isMute);
+        // 初始化暂停-继续按钮
+        this.gameContinue();
     },
 
     update: function (dt) {
+        //if (this.isPaused)
+        //    return;
+
         for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
             let childNode = this.bg.children[i];
             if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY) {
@@ -166,9 +184,20 @@ cc.Class({
             case cc.macro.KEY.p:
                 this.increaseScore();
                 break;
+            case cc.macro.KEY.t:
+                this.test();
             default:
                 break;
         }
+    },
+
+    test: function() {
+        // *** 测试函数 ***
+        // *** t 键触发 ***
+        if(this.isPaused)
+            this.gameContinue();
+        else
+            this.gamePause();
     },
 
     collision: function () {
@@ -178,15 +207,33 @@ cc.Class({
 
     gamePause: function() {
         // *** 游戏暂停 ***
-        if (cc.director.isPaused())
-            cc.director.resume();
-        else
-            cc.director.pause();
+        // 标记切换
+        this.isPaused = true;
+        // 暂停-继续按钮切换
+        this.node.getChildByName('continue').active = false;
+        this.node.getChildByName('pause').active = true;
+        // 暂停所有系统事件
+        this.node.pauseSystemEvents(true);
+        // 恢复按钮事件                          
+        this.node.getChildByName('music-on').resumeSystemEvents(true);
+        this.node.getChildByName('music-off').resumeSystemEvents(true);
+        this.node.getChildByName('continue').resumeSystemEvents(true);
+        this.node.getChildByName('pause').resumeSystemEvents(true);
+        // 暂停当前场景
+        cc.director.pause();
     },
 
     gameContinue: function() {
         // *** 游戏继续 ***
-        cc.log('gameContinue');
+        // 标记切换
+        this.isPaused = false;
+        // 暂停-继续按钮切换
+        this.node.getChildByName('continue').active = true;
+        this.node.getChildByName('pause').active = false;
+        // 恢复所有系统事件
+        this.node.resumeSystemEvents(true);
+        // 恢复当前场景
+        cc.director.resume();
     },
 
     gameRestart: function() {
@@ -202,6 +249,42 @@ cc.Class({
     returnHome: function() {
         // *** 回到主页 ***
         cc.director.loadScene('home');
+    },
+
+    switchMute: function (isMute) {
+        // *** 切换静音 ***
+        // 全局音频切换
+        this.audio.switchMute(isMute);      
+        // 音乐按钮切换
+        if (isMute) {
+            this.node.getChildByName('music-on').active = false;
+            this.node.getChildByName('music-off').active = true;
+        }
+        else {
+            this.node.getChildByName('music-on').active = true;
+            this.node.getChildByName('music-off').active = false;
+        }
+    },
+
+    clickMusicOn: function () {
+        // *** 按下音乐按钮 切换至静音 ***
+        this.switchMute(true);
+    },
+
+    clickMusicOff: function () {
+        // *** 按下音乐按钮 切换至非静音 ***
+        this.switchMute(false);
+    },
+
+    clickContinue: function () {
+        // *** 按下继续按钮 游戏暂停 ***
+        this.gamePause();
+    },
+
+    clickPause: function () {
+        // *** 按下暂停按钮 游戏继续 ***
+        this.gameContinue();
     }
+
 
 });
