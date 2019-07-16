@@ -32,7 +32,16 @@ cc.Class({
             type: cc.Integer,
             tooltip: '元素基准线相对于背景中心锚点的Y坐标'
         },
-        
+        screenHeight: {
+            default: 0,
+            type: cc.Integer,
+            tooltip: '屏幕高度'
+        },
+        screenWidth: {
+            default: 0,
+            type: cc.Integer,
+            tooltip: '屏幕宽度'
+        }
     },
 
     onLoad: function () {
@@ -46,8 +55,10 @@ cc.Class({
     },
 
     start: function () {
-        this.paths = [, this.elementPathLineX_1, this.elementPathLineX_2, 
-            this.elementPathLineX_3, this.elementPathLineX_4];
+        this.paths = [, this.elementPathLineX_1, this.elementPathLineX_2, this.elementPathLineX_3, this.elementPathLineX_4];
+        var screenSize = cc.winSize;
+        this.screenWidth = screenSize.width;
+        this.screenHeight = screenSize.height;
     },
 
     update: function (dt) {

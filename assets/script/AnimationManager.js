@@ -28,6 +28,11 @@ cc.Class({
             default: 0,
             type: cc.Float,
             tooltip: '旋转动画周期'
+        },
+        pullDownDuration: {
+            default: 0,
+            type: cc.Float,
+            tooltip: '首页菜单下拉动画时间'
         }
     },
 
@@ -90,6 +95,14 @@ cc.Class({
         node.runAction(this.setSpinAction());
     },
 
+    startGame: function(node, pullDownDistance) {
+        var pullDown = cc.moveBy(this.pullDownDuration, 0, pullDownDistance).easing(cc.easeExponentialIn());
+        var finished = cc.callFunc(function() {
+            cc.director.loadScene('game');
+        }, this);
+        node.runAction(cc.sequence(pullDown, finished));
+    },
+
     onLoad: function () {
         // 设置常驻节点属性
         cc.game.addPersistRootNode(this.node);
@@ -101,7 +114,6 @@ cc.Class({
     },
 
     start: function () {
-
     },
 
     update: function (dt) {
