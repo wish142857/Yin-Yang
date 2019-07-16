@@ -2,6 +2,7 @@
 // 背景脚本
 // *************************
 var DataManager = require('DataManager');
+var AnimationManager = require('AnimationManager');
 cc.Class({
     extends: cc.Component,
 
@@ -21,6 +22,10 @@ cc.Class({
         data: {                             // 全局数据
             default: null,
             type: DataManager
+        },
+        animation: {
+            default: null,
+            type: AnimationManager
         },
         pathLength: {
             default: 0,
@@ -74,9 +79,23 @@ cc.Class({
         path.x = posX;
         path.colorId = color;
         path.index = index;
+        path.falling = false;
+        path.opacity = 255;
+        path.scale = 1;
     }, 
+
+    recyclePath: function(path) {
+        if(path.colorId === 0) {
+            this.blackPathPool.put(path);
+        } else {
+            this.whitePathPool.put(path);
+        }
+    },
+
     start: function () {
         this.data = cc.find('DataManager').getComponent('DataManager');
+        this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
+
         this.pathX_1 = this.data.elementPathLineX_1;
         this.pathX_2 = this.data.elementPathLineX_2;
         this.pathX_3 = this.data.elementPathLineX_3;
@@ -89,16 +108,16 @@ cc.Class({
 
         this.halfScreenHeight = this.screenHeight / 2;
         this.initSpeed = 5;
-        this.lengthRecorder = -this.grayLength;
+        this.lengthRecorder = 0; //= -this.grayLength;
         this.totalLength = this.pathLength + this.grayLength;
         this.createPath(1, this.screenHeight, 1, this.pathX_1, -this.halfScreenHeight);
         this.createPath(0, this.screenHeight, 2, this.pathX_2, -this.halfScreenHeight);
         this.createPath(1, this.screenHeight, 3, this.pathX_3, -this.halfScreenHeight);
         this.createPath(0, this.screenHeight, 4, this.pathX_4, -this.halfScreenHeight);
-        this.createPath(1, this.totalLength, 1, this.pathX_1, this.halfScreenHeight + this.grayLength);
-        this.createPath(0, this.totalLength, 2, this.pathX_2, this.halfScreenHeight + this.grayLength);
-        this.createPath(1, this.totalLength, 3, this.pathX_3, this.halfScreenHeight + this.grayLength);
-        this.createPath(0, this.totalLength, 4, this.pathX_4, this.halfScreenHeight + this.grayLength);
+        this.createPath(1, this.totalLength, 1, this.pathX_1, this.halfScreenHeight);
+        this.createPath(0, this.totalLength, 2, this.pathX_2, this.halfScreenHeight);
+        this.createPath(1, this.totalLength, 3, this.pathX_3, this.halfScreenHeight);
+        this.createPath(0, this.totalLength, 4, this.pathX_4, this.halfScreenHeight);
         //this.createPath(1, this.screenHeight);
         
     },
@@ -114,35 +133,30 @@ cc.Class({
             this.lengthRecorder -= this.totalLength;
             refresh = true;
         }
-        /*for(let i = 0; i < 4; i++) {
-            this.currentColor[i] = -1;
-        }*/
         var childCount = this.node.childrenCount;
         //cc.log(childCount);
         // 从后向前遍历！
         for(let i = childCount - 1; i >= 0; --i) {
             let childNode = this.node.children[i];
             childNode.y -= this.initSpeed;
-            if(childNode.y + childNode.height <= -this.halfScreenHeight) {
-                if(childNode.colorId === 0) {
-                    this.blackPathPool.put(childNode);
-                } else {
-                    this.whitePathPool.put(childNode);
+
+            if(!childNode.falling) {
+                
+                if(childNode.y + childNode.height <= this.baselineY + this.grayLength) {
+                    this.animation.playFalling(childNode, this.recyclePath.bind(this));
+                    childNode.falling = true;
                 }
                 
             }
-            /*if(childNode.y <= this.baselineY && childNode.y + childNode.height > this.baselineY) {
-                this.currentColor[childNode.index] = childNode.colorId;
-            }*/                   
-        }
-        //cc.log(this.currentColor[1]); 
+        }    
         if(refresh) {
             this.pathGenerator();
-            var posY = this.halfScreenHeight - this.lengthRecorder + this.grayLength;
-            this.createPath(this.colorSequence[0], this.pathLength, 1, this.pathX_1, posY);
-            this.createPath(this.colorSequence[1], this.pathLength, 2, this.pathX_2, posY);
-            this.createPath(this.colorSequence[2], this.pathLength, 3, this.pathX_3, posY);
-            this.createPath(this.colorSequence[3], this.pathLength, 4, this.pathX_4, posY);
+            var posY = this.halfScreenHeight - this.lengthRecorder;
+            this.createPath(this.colorSequence[0], this.totalLength, 1, this.pathX_1, posY);
+            this.createPath(this.colorSequence[1], this.totalLength, 2, this.pathX_2, posY);
+            this.createPath(this.colorSequence[2], this.totalLength, 3, this.pathX_3, posY);
+            this.createPath(this.colorSequence[3], this.totalLength, 4, this.pathX_4, posY);
+
         }
     },
     
@@ -168,7 +182,7 @@ cc.Class({
                 }
             }
         } while(this.colorSequence.join('') === '0000' || this.colorSequence.join('') === '1111')
-        cc.log(this.colorSequence.join(''));
+        //cc.log(this.colorSequence.join(''));
         //return this.colorSequence;
         
     },

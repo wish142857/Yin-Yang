@@ -3,12 +3,8 @@
 // *************************
 
 var AudioManager = require('AudioManager');
-<<<<<<< HEAD
 var AnimationManager = require('AnimationManager');
 var DataManager = require('DataManager');
-=======
-
->>>>>>> ae04134c3e571190ae9e5b085ff250c9996cf6cf
 cc.Class({
     extends: cc.Component,
 
@@ -16,7 +12,6 @@ cc.Class({
         audio: {                            // 全局音频引用
             default: null,
             type: AudioManager
-<<<<<<< HEAD
         },
         animation: {                        // 全局动画
             default: null,
@@ -26,24 +21,16 @@ cc.Class({
             default: null,
             type: DataManager
         },
-=======
-        }
->>>>>>> ae04134c3e571190ae9e5b085ff250c9996cf6cf
     },
 
     onLoad: function () {
     },
 
     start: function () {
-<<<<<<< HEAD
         this.data = cc.find('DataManager').getComponent('DataManager');
         this.audio = cc.find('AudioManager').getComponent('AudioManager');
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         this.option = this.node.getChildByName('option');
-=======
-        // 引用全局音频
-        this.audio = cc.find('AudioManager').getComponent('AudioManager');
->>>>>>> ae04134c3e571190ae9e5b085ff250c9996cf6cf
         // 初始化音乐按钮（默认非静音）
         this.switchMute(false);
     },
@@ -54,11 +41,7 @@ cc.Class({
 
     startGame: function () {
         // *** 开始游戏 ***
-<<<<<<< HEAD
         this.animation.startGame(this.option, -this.data.screenHeight - 50);
-=======
-        cc.director.loadScene('game');
->>>>>>> ae04134c3e571190ae9e5b085ff250c9996cf6cf
     },
 
     showIntroduction: function () {

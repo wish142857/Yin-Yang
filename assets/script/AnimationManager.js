@@ -33,6 +33,11 @@ cc.Class({
             default: 0,
             type: cc.Float,
             tooltip: '首页菜单下拉动画时间'
+        },
+        fadeDuration: {
+            default: 0,
+            type: cc.Float,
+            tooltip: '暂停时渐隐时间'
         }
     },
 
@@ -93,6 +98,23 @@ cc.Class({
     playSpin: function(node) {
         // 旋转动画播放        
         node.runAction(this.setSpinAction());
+    },
+
+    playShadeOn: function(node, gamePause) {
+        var finished = cc.callFunc(gamePause, this);
+        node.runAction(cc.sequence(cc.fadeTo(this.fadeDuration, 200), finished));
+    },
+
+    playShadeOff: function(node) {
+        node.runAction(cc.fadeTo(this.fadeDuration, 0));
+    },
+
+    playFalling: function(node, recycle) {
+        var finished = cc.callFunc(recycle, this);
+        var moveUp = cc.moveBy(2, 0, node.height * 0.5);
+        var falling = cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0), moveUp);
+        node.runAction(cc.sequence(falling, finished));
+        cc.log(node.y);
     },
 
     startGame: function(node, pullDownDistance) {
