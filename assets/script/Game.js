@@ -23,7 +23,15 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        menuNode: {                         // 菜单栏结点引用
+            default: null,
+            type: cc.Node
+        },
         scoreNode: {                        // 分数栏结点引用
+            default: null,
+            type: cc.Node
+        },
+        buttonNode: {                       // 按钮栏结点引用
             default: null,
             type: cc.Node
         },
@@ -59,9 +67,10 @@ cc.Class({
     },
 
     start: function () {
-        // 游戏数据初始化
+        // *** 游戏数据初始化 ***
         this.score = 0;
         this.isPaused = false;
+        // *** 结点与组件引用 ***
         // 引用全局数据
         this.data = cc.find('DataManager').getComponent('DataManager');
         // 引用全局音频
@@ -70,9 +79,16 @@ cc.Class({
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // 引用背景结点
         this.bg = this.node.getChildByName('Background');
-        // 左右元素初始化
+        // 引用左右元素
         this.lElementNode = this.node.getChildByName('Black');
         this.rElementNode = this.node.getChildByName('White');
+        // 菜单栏引用
+        this.menuNode = this.node.getChildByName('Menu');
+        // 分数栏引用
+        this.scoreNode = this.node.getChildByName('Score');
+        // 按钮栏引用
+        this.buttonNode = this.node.getChildByName('Button');
+        // *** 左右元素初始化 ***
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
         this.lElementNode.pathNumber = 2;
@@ -81,17 +97,17 @@ cc.Class({
         this.rElementNode.colorId = 1;
         this.animation.playSpin(this.lElementNode);
         this.animation.playSpin(this.rElementNode);
-        // 分数栏初始化
-        this.scoreNode = this.node.getChildByName('Score');
+        // *** 菜单栏初始化 ***
+        this.menuNode.active = false;
+        // *** 分数栏初始化 ***
         this.scoreNode.getComponent(cc.Label).string = this.score;
+        // *** 按钮栏初始化 ***
         // 初始化音乐按钮（承接全局）
         this.switchMute(this.audio.isMute);
         // 初始化暂停-继续按钮
         this.gameContinue();
-<<<<<<< HEAD
+        // *** 播放背景音乐 ***
         this.audio.playMusic(this.audio.music1);
-=======
->>>>>>> ae04134c3e571190ae9e5b085ff250c9996cf6cf
     },
 
     update: function (dt) {
@@ -212,16 +228,17 @@ cc.Class({
         // *** 游戏暂停 ***
         // 标记切换
         this.isPaused = true;
+        // 菜单栏显示
+        this.menuNode.active = true;
         // 暂停-继续按钮切换
-        this.node.getChildByName('continue').active = false;
-        this.node.getChildByName('pause').active = true;
+        this.buttonNode.getChildByName('continue').active = false;
+        this.buttonNode.getChildByName('pause').active = true;
         // 暂停所有系统事件
         this.node.pauseSystemEvents(true);
-        // 恢复按钮事件                          
-        this.node.getChildByName('music-on').resumeSystemEvents(true);
-        this.node.getChildByName('music-off').resumeSystemEvents(true);
-        this.node.getChildByName('continue').resumeSystemEvents(true);
-        this.node.getChildByName('pause').resumeSystemEvents(true);
+        // 恢复按钮栏事件                          
+        this.buttonNode.resumeSystemEvents(true);
+        // 恢复菜单栏事件
+        this.menuNode.resumeSystemEvents(true);
         // 暂停当前场景
         cc.director.pause();
     },
@@ -230,9 +247,11 @@ cc.Class({
         // *** 游戏继续 ***
         // 标记切换
         this.isPaused = false;
+        // 菜单栏隐藏
+        this.menuNode.active = false;
         // 暂停-继续按钮切换
-        this.node.getChildByName('continue').active = true;
-        this.node.getChildByName('pause').active = false;
+        this.buttonNode.getChildByName('continue').active = true;
+        this.buttonNode.getChildByName('pause').active = false;
         // 恢复所有系统事件
         this.node.resumeSystemEvents(true);
         // 恢复当前场景
@@ -251,6 +270,7 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
+        return;
         cc.director.loadScene('home');
     },
 
@@ -260,12 +280,12 @@ cc.Class({
         this.audio.switchMute(isMute);      
         // 音乐按钮切换
         if (isMute) {
-            this.node.getChildByName('music-on').active = false;
-            this.node.getChildByName('music-off').active = true;
+            this.buttonNode.getChildByName('music-on').active = false;
+            this.buttonNode.getChildByName('music-off').active = true;
         }
         else {
-            this.node.getChildByName('music-on').active = true;
-            this.node.getChildByName('music-off').active = false;
+            this.buttonNode.getChildByName('music-on').active = true;
+            this.buttonNode.getChildByName('music-off').active = false;
         }
     },
 
