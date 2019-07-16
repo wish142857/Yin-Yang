@@ -88,7 +88,10 @@ cc.Class({
         this.switchMute(this.audio.isMute);
         // 初始化暂停-继续按钮
         this.gameContinue();
+<<<<<<< HEAD
         this.audio.playMusic(this.audio.music1);
+=======
+>>>>>>> ae04134c3e571190ae9e5b085ff250c9996cf6cf
     },
 
     update: function (dt) {
