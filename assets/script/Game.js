@@ -307,6 +307,7 @@ cc.Class({
 
     gameRestart: function() {
         // *** 游戏重开 ***
+        cc.director.resume();
         cc.director.loadScene('game');
     },
 
@@ -336,6 +337,7 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
+        cc.director.resume();
         cc.director.loadScene('home');
     },
 
