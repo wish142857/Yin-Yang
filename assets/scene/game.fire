@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.3535533905932739,
-      "y": 0.3535533905932739,
+      "x": 1.3975818724353581,
+      "y": 1.3975818724353581,
       "z": 1
     },
     "_quat": {
@@ -386,8 +386,8 @@
     },
     "data": null,
     "animation": null,
-    "pathLength": 500,
-    "grayLength": 300,
+    "pathLength": 200,
+    "grayLength": 400,
     "_id": "74x4bFEgBGBpinsjS2GX9H"
   },
   {

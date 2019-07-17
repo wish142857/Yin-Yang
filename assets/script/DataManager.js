@@ -41,7 +41,12 @@ cc.Class({
             default: 0,
             type: cc.Integer,
             tooltip: '屏幕宽度'
-        }
+        },
+        gameSpeed: {
+            default: 0,
+            type: cc.Integer,
+            tooltip: '游戏速度'
+        } 
     },
 
     onLoad: function () {
@@ -59,6 +64,7 @@ cc.Class({
         var screenSize = cc.winSize;
         this.screenWidth = screenSize.width;
         this.screenHeight = screenSize.height;
+        
     },
 
     update: function (dt) {

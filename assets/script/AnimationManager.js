@@ -110,11 +110,11 @@ cc.Class({
     },
 
     playFalling: function(node, recycle) {
+        
         var finished = cc.callFunc(recycle, this);
         var moveUp = cc.moveBy(2, 0, node.height * 0.5);
         var falling = cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0), moveUp);
         node.runAction(cc.sequence(falling, finished));
-        cc.log(node.y);
     },
 
     startGame: function(node, pullDownDistance) {

@@ -107,7 +107,7 @@ cc.Class({
         this.screenHeight = this.data.screenHeight;
 
         this.halfScreenHeight = this.screenHeight / 2;
-        this.initSpeed = 5;
+        //this.initSpeed = 5;
         this.lengthRecorder = 0; //= -this.grayLength;
         this.totalLength = this.pathLength + this.grayLength;
         this.createPath(1, this.screenHeight, 1, this.pathX_1, -this.halfScreenHeight);
@@ -128,7 +128,7 @@ cc.Class({
     },
 
     update: function (dt) {
-        this.lengthRecorder += this.initSpeed;
+        this.lengthRecorder += this.data.gameSpeed;
         var refresh = false;
         if(this.lengthRecorder >= this.totalLength) {
             this.lengthRecorder -= this.totalLength;
@@ -139,7 +139,7 @@ cc.Class({
         // 从后向前遍历！
         for(let i = childCount - 1; i >= 0; --i) {
             let childNode = this.node.children[i];
-            childNode.y -= this.initSpeed;
+            childNode.y -= this.data.gameSpeed;
 
             if(!childNode.falling) {
                 
@@ -159,6 +159,7 @@ cc.Class({
             this.createPath(this.colorSequence[3], this.totalLength, 4, this.pathX_4, posY);
 
         }
+        this.speedUp();
     },
     
     pathGenerator: function() {
@@ -195,7 +196,7 @@ cc.Class({
     speedUp: function() {
         this.counter++;
         if(this.counter % 1800 === 0) {
-            this.initSpeed += 1;
+            this.data.gameSpeed += 1;
         }
     }
 })

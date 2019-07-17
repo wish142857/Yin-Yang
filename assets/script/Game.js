@@ -103,6 +103,8 @@ cc.Class({
         this.lElementNode.colorId = 0;
         this.rElementNode.pathNumber = 3;
         this.rElementNode.colorId = 1;
+        this.animation.isLeftMoving = false;
+        this.animation.isRightMoving = false;
         this.animation.playSpin(this.lElementNode);
         this.animation.playSpin(this.rElementNode);
         // *** 菜单栏初始化 ***
@@ -128,21 +130,25 @@ cc.Class({
         //if (this.isPaused)
         //    return;
 
+        // 判定死亡逻辑
         for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
             let childNode = this.bg.children[i];
-            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY) {
+            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling) {
                 if(childNode.index === this.lElementNode.pathNumber) {
-                    if(childNode.colorId !== -1 && childNode.colorId !== this.lElementNode.colorId) {                        
+                    if(childNode.colorId !== this.lElementNode.colorId) {                        
                         this.returnHome();
                     }
                 }
                 if(childNode.index === this.rElementNode.pathNumber) {
-                    if(childNode.colorId !== -1 && childNode.colorId !== this.rElementNode.colorId) {
+                    if(childNode.colorId !== this.rElementNode.colorId) {
                         this.returnHome();
                     }
                 }
             }                   
         }
+        // 加分逻辑
+        this.increaseScore(this.data.gameSpeed);        
+        
     },
 
     increaseScore: function () {
@@ -188,8 +194,6 @@ cc.Class({
         if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
             var posX1 = this.data.paths[this.rElementNode.pathNumber];
             var posX2 = this.data.paths[this.lElementNode.pathNumber];
-            cc.log(posX1);
-            cc.log(posX2);
             this.animation.playSwitch(this.lElementNode, this.rElementNode, posX1, posX2);            
             // 赛道编号交换
             var tempNum = this.lElementNode.pathNumber;
@@ -304,7 +308,7 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
-        return;
+        // return;
         cc.director.loadScene('home');
     },
 
