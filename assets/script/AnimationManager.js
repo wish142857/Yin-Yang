@@ -117,12 +117,17 @@ cc.Class({
         node.runAction(cc.sequence(falling, finished));
     },
 
+    playTutorialFall: function(node) {
+        node.runAction(cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0)));
+    },
+
     startGame: function(node, pullDownDistance) {
         var pullDown = cc.moveBy(this.pullDownDuration, 0, pullDownDistance).easing(cc.easeExponentialIn());
-        var finished = cc.callFunc(function() {
+        /*var finished = cc.callFunc(function() {
+            cc.log("started");
             cc.director.loadScene('game');
-        }, this);
-        node.runAction(cc.sequence(pullDown, finished));
+        }, this);*/
+        node.runAction(pullDown);
     },
 
     onLoad: function () {

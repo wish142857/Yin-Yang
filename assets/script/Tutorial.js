@@ -1,8 +1,3 @@
-// *************************
-// 游戏场景主脚本
-// *************************
-
-
 var DataManager = require('DataManager');
 var AudioManager = require('AudioManager');
 var AnimationManager = require('AnimationManager');
@@ -39,10 +34,6 @@ cc.Class({
             default: null,
             type: cc.Node
         },
-        resultNode: {                       // 结算栏结点引用
-            default: null,
-            type: cc.Node
-        },
         lElementNode: {                     // 左元素节点引用
             default: null,
             type: cc.Node
@@ -67,6 +58,9 @@ cc.Class({
     },
 
     onLoad: function () {
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        // 引用全局动画
+        this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // *** 游戏数据初始化 ***
         this.score = 0;
         this.isPaused = false;
@@ -75,8 +69,7 @@ cc.Class({
         this.data = cc.find('DataManager').getComponent('DataManager');
         // 引用全局音频
         this.audio = cc.find('AudioManager').getComponent('AudioManager');
-        // 引用全局动画
-        this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
+        
         // 引用背景节点
         this.bg = this.node.getChildByName('Background');
         // 引用暂停界面阴影节点
@@ -92,11 +85,9 @@ cc.Class({
         this.buttonNode = this.node.getChildByName('Button');
         // 按键栏引用
         this.keyNode = this.node.getChildByName('Key');
-        // 结算栏引用
-        this.resultNode = this.node.getChildByName('Result');
         // *** 左右元素初始化 ***
-        this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
-        this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
+        this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, -100);
+        this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, -100);
         this.lElementNode.pathNumber = 2;
         this.lElementNode.colorId = 0;
         this.rElementNode.pathNumber = 3;
@@ -112,19 +103,23 @@ cc.Class({
         // *** 按钮栏初始化 ***
         // 初始化音乐按钮（承接全局）
         this.switchMute(this.audio.isMute);
-        // 初始化暂停-继续按钮
-        this.gameContinue();
         // *** 按键栏初始化 ***
         this.keyNode.getChildByName('switch').active = true;
         this.keyNode.getChildByName('black-LShift').active = true;
         this.keyNode.getChildByName('black-RShift').active = false;
         this.keyNode.getChildByName('white-LShift').active = false;
         this.keyNode.getChildByName('white-RShift').active = true;
-        // *** 结算栏初始化 ***
-        this.resultNode.active = false;
+        // 初始化暂停-继续按钮
+        this.gameContinue();
         // *** 播放背景音乐 ***
         this.audio.playMusic(this.audio.music1);
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+
+        this.test = this.node.getChildByName('test');
+        this.scheduleOnce(function() {
+            cc.log("timeout");
+            this.animation.playTutorialFall(this.test, null);
+        }, 3);
+    
     },
 
     onDestroy: function() {
@@ -132,31 +127,9 @@ cc.Class({
     },
 
     start: function () {
-        
     },
 
-    update: function (dt) {
-        //if (this.isPaused)
-        //    return;
-
-        // 判定死亡逻辑
-        for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
-            let childNode = this.bg.children[i];
-            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling) {
-                if(childNode.index === this.lElementNode.pathNumber) {
-                    if(childNode.colorId !== this.lElementNode.colorId) {                        
-                        this.beforeGameOver();
-                    }
-                }
-                if(childNode.index === this.rElementNode.pathNumber) {
-                    if(childNode.colorId !== this.rElementNode.colorId) {
-                        this.beforeGameOver();
-                    }
-                }
-            }                   
-        }
-        // 加分逻辑
-        // this.increaseScore(this.data.gameSpeed);        
+    update: function (dt) {        
         
     },
 
@@ -212,7 +185,7 @@ cc.Class({
             var tempNode = this.lElementNode;
             this.lElementNode = this.rElementNode;
             this.rElementNode = tempNode;
-            
+
             // 按键切换
             if(this.keyNode.getChildByName('black-LShift').active) {
                 this.keyNode.getChildByName('black-LShift').active = false;
@@ -230,9 +203,8 @@ cc.Class({
                 this.keyNode.getChildByName('black-RShift').active = true;
                 this.keyNode.getChildByName('white-RShift').active = false;
             }
-            
         }
-    
+        
     },
 
     // 测试使用
@@ -260,7 +232,10 @@ cc.Class({
     test: function() {
         // *** 测试函数 ***
         // *** t 键触发 ***
-        this.gameOver();
+        if(this.isPaused)
+            this.gameContinue();
+        else
+            this.gamePause();
     },
 
     collision: function () {
@@ -284,7 +259,7 @@ cc.Class({
         // 恢复菜单栏事件
         this.menuNode.resumeSystemEvents(true);
         // 暂停当前场景
-        cc.director.pause();
+        cc.director.pause();        
     },
 
     gameContinue: function() {
@@ -307,35 +282,17 @@ cc.Class({
 
     gameRestart: function() {
         // *** 游戏重开 ***
-        cc.director.loadScene('game');
+        cc.log('gameRestart');
     },
 
     gameOver: function() {
         // *** 游戏结束 ***
-        
-        // 暂停所有系统事件
-        this.node.pauseSystemEvents(true);
-        // 恢复结算栏事件
-        this.resultNode.resumeSystemEvents(true);
-        // 暂停当前场景
-        cc.director.pause();
-        // 结算分数更新
-        this.resultNode.getChildByName('score').getComponent(cc.Label).string = this.score;
-        // 结算评价更新
-        if (this.score >= this.data.scoreA)
-            this.resultNode.getChildByName('scoreA').active = true;
-        else if (this.score >= this.data.scoreB)
-            this.resultNode.getChildByName('scoreB').active = true;
-        else if (this.score >= this.data.scoreC)
-            this.resultNode.getChildByName('scoreC').active = true;
-        else
-            this.resultNode.getChildByName('scoreD').active = true;
-        // 激活结算界面
-        this.resultNode.active = true;
+        cc.director.loadScene('game');
     },
 
     returnHome: function() {
         // *** 回到主页 ***
+        // return;
         cc.director.loadScene('home');
     },
 
@@ -374,11 +331,8 @@ cc.Class({
     clickPause: function () {
         // *** 按下暂停按钮 游戏继续 ***
         this.gameContinue();
-    },
-
-    beforeGameOver: function() {
-        this.animation.playShadeOn(this.shade, this.gameOver.bind(this));
     }
 
 
 });
+

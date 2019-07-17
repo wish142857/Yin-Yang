@@ -7,10 +7,6 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        pathPrefab: {
-            default: null,
-            type: cc.Prefab
-        },
         blackPathPrefab: {
             default: null,
             type: cc.Prefab
@@ -38,12 +34,6 @@ cc.Class({
     },
 
     onLoad: function () {
-        this.pathPool = new cc.NodePool;
-        let initCount = 12;
-        for (let i = 0; i < initCount; ++i) {
-            let path = cc.instantiate(this.pathPrefab); // 创建节点
-            this.pathPool.put(path); // 通过 put 接口放入对象池
-        }
         let poolCapacity = 8;
         this.blackPathPool = new cc.NodePool;
         for (let i = 0; i < poolCapacity; ++i) {

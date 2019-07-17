@@ -21,18 +21,25 @@ cc.Class({
             default: null,
             type: DataManager
         },
+        option: {
+            default: null,
+            type: cc.Node
+        }
     },
 
     onLoad: function () {
-    },
-
-    start: function () {
         this.data = cc.find('DataManager').getComponent('DataManager');
         this.audio = cc.find('AudioManager').getComponent('AudioManager');
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
-        this.option = this.node.getChildByName('option');
+        this.option= this.node.getChildByName('option');
+        
         // 初始化音乐按钮（默认非静音）
         this.switchMute(false);
+    },
+
+    start: function () {
+        
+        
     },
 
     update: function (dt) {
@@ -42,12 +49,15 @@ cc.Class({
     startGame: function () {
         // *** 开始游戏 ***
         this.animation.startGame(this.option, -this.data.screenHeight - 50);
+        setTimeout(function() {
+            cc.director.loadScene('game');
+        }, 1501);
     },
 
     showIntroduction: function () {
         // *** 游戏介绍 ***
         cc.log('showIntroduction');
-
+        cc.director.loadScene('tutorial');
     },
 
     showRankingList: function() {
