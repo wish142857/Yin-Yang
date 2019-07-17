@@ -35,6 +35,10 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        keyNode: {                          // 按键栏结点引用
+            default: null,
+            type: cc.Node
+        },
         lElementNode: {                     // 左元素节点引用
             default: null,
             type: cc.Node
@@ -79,11 +83,8 @@ cc.Class({
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // 引用背景节点
         this.bg = this.node.getChildByName('Background');
-<<<<<<< HEAD
         // 引用暂停界面阴影节点
         this.shade = this.node.getChildByName('Shade');
-=======
->>>>>>> a6b884fa4cc5d55d1a008e4cbf8c8531b53683d5
         // 引用左右元素
         this.lElementNode = this.node.getChildByName('Black');
         this.rElementNode = this.node.getChildByName('White');
@@ -93,6 +94,8 @@ cc.Class({
         this.scoreNode = this.node.getChildByName('Score');
         // 按钮栏引用
         this.buttonNode = this.node.getChildByName('Button');
+        // 按键栏引用
+        this.keyNode = this.node.getChildByName('Key');
         // *** 左右元素初始化 ***
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
@@ -109,6 +112,12 @@ cc.Class({
         // *** 按钮栏初始化 ***
         // 初始化音乐按钮（承接全局）
         this.switchMute(this.audio.isMute);
+        // *** 按键栏初始化 ***
+        this.keyNode.getChildByName('switch').active = true;
+        this.keyNode.getChildByName('black-LShift').active = true;
+        this.keyNode.getChildByName('black-RShift').active = false;
+        this.keyNode.getChildByName('white-LShift').active = false;
+        this.keyNode.getChildByName('white-RShift').active = true;
         // 初始化暂停-继续按钮
         this.gameContinue();
         // *** 播放背景音乐 ***
@@ -190,7 +199,24 @@ cc.Class({
             var tempNode = this.lElementNode;
             this.lElementNode = this.rElementNode;
             this.rElementNode = tempNode;
-        }      
+        }
+        // 按键切换
+        if(this.keyNode.getChildByName('black-LShift').active) {
+            this.keyNode.getChildByName('black-LShift').active = false;
+            this.keyNode.getChildByName('white-LShift').active = true;
+        }
+        else {
+            this.keyNode.getChildByName('black-LShift').active = true;
+            this.keyNode.getChildByName('white-LShift').active = false;
+        }
+        if(this.keyNode.getChildByName('black-RShift').active) {
+            this.keyNode.getChildByName('black-RShift').active = false;
+            this.keyNode.getChildByName('white-RShift').active = true;
+        }
+        else {
+            this.keyNode.getChildByName('black-RShift').active = true;
+            this.keyNode.getChildByName('white-RShift').active = false;
+        }
     },
 
     // 测试使用

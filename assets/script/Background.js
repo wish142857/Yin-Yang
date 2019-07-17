@@ -119,6 +119,7 @@ cc.Class({
         this.createPath(1, this.totalLength, 3, this.pathX_3, this.halfScreenHeight);
         this.createPath(0, this.totalLength, 4, this.pathX_4, this.halfScreenHeight);
         //this.createPath(1, this.screenHeight);
+        this.counter = 0;
         
     },
 
@@ -189,5 +190,12 @@ cc.Class({
 
     randomizer: function() {
         return Math.round(Math.random());
+    },
+    
+    speedUp: function() {
+        this.counter++;
+        if(this.counter % 1800 === 0) {
+            this.initSpeed += 1;
+        }
     }
 })
