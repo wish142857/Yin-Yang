@@ -50,8 +50,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.6128790900093743,
-      "y": 0.6128790900093743,
+      "x": 0.21507813930511474,
+      "y": 0.21507813930511474,
       "z": 1
     },
     "_quat": {
@@ -3702,7 +3702,7 @@
       "__id__": 88
     },
     "_enabled": true,
-    "elementBaseLineY": 0,
+    "elementBaseLineY": -100,
     "isLeftMoving": false,
     "isRightMoving": false,
     "shiftDuration": 0.2,
@@ -3783,7 +3783,7 @@
     "elementPathLineX_2": -80,
     "elementPathLineX_3": 80,
     "elementPathLineX_4": 240,
-    "elementBaseLineY": 0,
+    "elementBaseLineY": -100,
     "screenHeight": 0,
     "screenWidth": 0,
     "gameSpeed": 5,

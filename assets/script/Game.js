@@ -125,6 +125,7 @@ cc.Class({
         // *** 播放背景音乐 ***
         this.audio.playMusic(this.audio.music1);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        this.fail = false;
     },
 
     onDestroy: function() {
@@ -142,21 +143,23 @@ cc.Class({
         // 判定死亡逻辑
         for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
             let childNode = this.bg.children[i];
-            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling) {
+            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling && !this.fail) {
                 if(childNode.index === this.lElementNode.pathNumber) {
-                    if(childNode.colorId !== this.lElementNode.colorId) {                        
+                    if(childNode.colorId !== this.lElementNode.colorId) {     
+                        this.fail = true;                   
                         this.beforeGameOver();
                     }
                 }
                 if(childNode.index === this.rElementNode.pathNumber) {
                     if(childNode.colorId !== this.rElementNode.colorId) {
+                        this.fail = true;  
                         this.beforeGameOver();
                     }
                 }
             }                   
         }
         // 加分逻辑
-        // this.increaseScore(this.data.gameSpeed);        
+        this.increaseScore(this.data.gameSpeed);        
         
     },
 
@@ -379,6 +382,7 @@ cc.Class({
     },
 
     beforeGameOver: function() {
+        this.buttonNode.opacity = 50;
         this.animation.playShadeOn(this.shade, this.gameOver.bind(this));
     }
 

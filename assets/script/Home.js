@@ -57,7 +57,10 @@ cc.Class({
     showIntroduction: function () {
         // *** 游戏介绍 ***
         cc.log('showIntroduction');
-        cc.director.loadScene('tutorial');
+        this.animation.startGame(this.option, -this.data.screenHeight - 50);
+        setTimeout(function() {
+            cc.director.loadScene('tutorial');
+        }, 1501);
     },
 
     showRankingList: function() {

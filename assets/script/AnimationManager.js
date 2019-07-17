@@ -118,7 +118,8 @@ cc.Class({
     },
 
     playTutorialFall: function(node) {
-        node.runAction(cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0)));
+        var moveDown = cc.moveBy(2, 0, -node.height * 0.5);
+        node.runAction(cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0), moveDown));
     },
 
     startGame: function(node, pullDownDistance) {

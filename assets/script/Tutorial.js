@@ -58,7 +58,6 @@ cc.Class({
     },
 
     onLoad: function () {
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         // 引用全局动画
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // *** 游戏数据初始化 ***
@@ -86,8 +85,8 @@ cc.Class({
         // 按键栏引用
         this.keyNode = this.node.getChildByName('Key');
         // *** 左右元素初始化 ***
-        this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, -100);
-        this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, -100);
+        this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
+        this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
         this.lElementNode.pathNumber = 2;
         this.lElementNode.colorId = 0;
         this.rElementNode.pathNumber = 3;
@@ -104,7 +103,7 @@ cc.Class({
         // 初始化音乐按钮（承接全局）
         this.switchMute(this.audio.isMute);
         // *** 按键栏初始化 ***
-        this.keyNode.getChildByName('switch').active = true;
+        this.keyNode.getChildByName('switch').active = false;
         this.keyNode.getChildByName('black-LShift').active = true;
         this.keyNode.getChildByName('black-RShift').active = false;
         this.keyNode.getChildByName('white-LShift').active = false;
@@ -114,23 +113,61 @@ cc.Class({
         // *** 播放背景音乐 ***
         this.audio.playMusic(this.audio.music1);
 
-        this.test = this.node.getChildByName('test');
-        this.scheduleOnce(function() {
-            cc.log("timeout");
-            this.animation.playTutorialFall(this.test, null);
-        }, 3);
+        this.up1 = this.node.getChildByName('up1');
+        this.up2 = this.node.getChildByName('up2');
+        this.up3 = this.node.getChildByName('up3');
+        this.up4 = this.node.getChildByName('up4');
+        this.down1 = this.node.getChildByName('down1');
+        this.down2 = this.node.getChildByName('down2');
+        this.down3 = this.node.getChildByName('down3');
+        this.down4 = this.node.getChildByName('down4');
+
+        this.stage = 1;
     
     },
 
     onDestroy: function() {
-        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     },
 
     start: function () {
     },
 
     update: function (dt) {        
-        
+        if(this.leftPressed && this.rightPressed && this.stage === 1) {
+            this.stage = 2;
+            this.animation.playTutorialFall(this.down1);
+            this.animation.playTutorialFall(this.down2);
+            this.animation.playTutorialFall(this.down3);
+            this.animation.playTutorialFall(this.down4);
+            this.keyNode.getChildByName('switch').active = true;
+        }
+        if(this.stage === 2 && this.switched) {
+            this.stage = 3;
+        }
+        if(this.stage === 3) {
+            this.up1.y -= 5;
+            this.up2.y -= 5;
+            this.up3.y -= 5;
+            this.up4.y -= 5;
+            if(this.up1.y <= -this.up1.height * 0.5) {
+                this.stage = 4;
+            }
+        }
+        if(this.stage === 4) {
+            this.stage = 5;
+            for(let i = 0; i < this.node.childrenCount; i++) {
+                if(this.node.children[i].name !== 'Shadow') {
+                    this.node.children[i].runAction(cc.fadeTo(1.5, 0));
+                } else {
+                    this.node.children[i].runAction(cc.fadeTo(1.5, 255));
+                }
+            }
+            //this.node.
+            //this
+            this.scheduleOnce(function() {
+                cc.director.loadScene('home');
+            }, 1.5);
+        }
     },
 
     increaseScore: function () {
@@ -152,7 +189,7 @@ cc.Class({
             }
             this.animation.playShift(this.lElementNode, posX, true);
         }
-        
+        this.leftPressed = true;
     },
 
     rightShift: function () {
@@ -168,6 +205,7 @@ cc.Class({
             }
             this.animation.playShift(this.rElementNode, posX, false);
         }
+        this.rightPressed = true;
     },
 
     switch: function () {
@@ -203,44 +241,9 @@ cc.Class({
                 this.keyNode.getChildByName('black-RShift').active = true;
                 this.keyNode.getChildByName('white-RShift').active = false;
             }
+            this.switched = true;
         }
         
-    },
-
-    // 测试使用
-    onKeyDown (event) {      
-        switch(event.keyCode) {
-            case cc.macro.KEY.a:
-                this.leftShift();
-                break;
-            case cc.macro.KEY.d:
-                this.rightShift();
-                break;
-            case cc.macro.KEY.s:
-                this.switch();
-                break;
-            case cc.macro.KEY.p:
-                this.increaseScore();
-                break;
-            case cc.macro.KEY.t:
-                this.test();
-            default:
-                break;
-        }
-    },
-
-    test: function() {
-        // *** 测试函数 ***
-        // *** t 键触发 ***
-        if(this.isPaused)
-            this.gameContinue();
-        else
-            this.gamePause();
-    },
-
-    collision: function () {
-        // *** 碰撞检测 ***
-        return false;
     },
 
     gamePause: function() {
@@ -282,8 +285,7 @@ cc.Class({
 
     gameRestart: function() {
         // *** 游戏重开 ***
-        cc.director.resume();
-        cc.log('gameRestart');
+        cc.director.loadScene('tutorial');
     },
 
     gameOver: function() {
