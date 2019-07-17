@@ -50,8 +50,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0.4965625286102295,
+      "y": 0.4965625286102295,
       "z": 1
     },
     "_quat": {
@@ -3794,6 +3794,10 @@
     "screenHeight": 0,
     "screenWidth": 0,
     "gameSpeed": 5,
+    "scoreD": 0,
+    "scoreC": 5,
+    "scoreB": 10,
+    "scoreA": 20,
     "_id": "2526s2ALpCK5NhzWQEhi4v"
   }
 ]

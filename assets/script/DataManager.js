@@ -46,7 +46,27 @@ cc.Class({
             default: 0,
             type: cc.Integer,
             tooltip: '游戏速度'
-        } 
+        },
+        scoreD: {
+            default: 0,
+            type: cc.Integer,
+            tooltip: ' 丁 评价最低分'
+        },
+        scoreC: {
+            default: 5,
+            type: cc.Integer,
+            tooltip: ' 丙 评价最低分'
+        },
+        scoreB: {
+            default: 10,
+            type: cc.Integer,
+            tooltip: ' 乙 评价最低分'
+        },
+        scoreA: {
+            default: 20,
+            type: cc.Integer,
+            tooltip: ' 甲 评价最低分'
+        }
     },
 
     onLoad: function () {
