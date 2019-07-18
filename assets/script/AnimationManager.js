@@ -50,6 +50,7 @@ cc.Class({
     setSpinAction: function() {
         // 旋转动画
         var rotate = cc.rotateBy(this.spinDuration, -180);
+        rotate.setTag(1);
         return cc.repeatForever(rotate);
     },
 
@@ -120,6 +121,17 @@ cc.Class({
     playTutorialFall: function(node) {
         var moveDown = cc.moveBy(2, 0, -node.height * 0.5);
         node.runAction(cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0), moveDown));
+    },
+
+    playFuse: function(node1, node2, posX1, posX2) {
+        var toCenter1= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0));
+        var toCenter2= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0));
+        var goBack1 = cc.spawn(cc.moveTo(this.shiftDuration, posX1, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0));
+        var goBack2 = cc.spawn(cc.moveTo(this.shiftDuration, posX2, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0));
+        var spin1 = cc.repeat(cc.rotateBy(this.spinDuration, -180), 16);
+        var spin2 = cc.repeat(cc.rotateBy(this.spinDuration, -180), 16);
+        node1.runAction(cc.sequence(toCenter1, spin1, goBack1));
+        node2.runAction(cc.sequence(toCenter2, spin2, goBack2));
     },
 
     startGame: function(node, pullDownDistance) {

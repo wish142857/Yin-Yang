@@ -37,7 +37,7 @@
   },
   "startScene": "8d8ddc95-8d5b-40cf-898b-29096f8c8029",
   "title": "YinYang",
-  "webOrientation": "auto",
+  "webOrientation": "portrait",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "",
     "appid": "wx02e708f3c7471f12",

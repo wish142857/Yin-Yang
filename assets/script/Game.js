@@ -144,31 +144,84 @@ cc.Class({
         this.clickedLeft = false;
         this.clickedRight = false;
         // 判定死亡逻辑
-        for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
-            let childNode = this.bg.children[i];
-            if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling && !this.fail) {
-                if(childNode.index === this.lElementNode.pathNumber) {
-                    if(childNode.colorId !== this.lElementNode.colorId) {
-                        this.fail = true;                        
-                        this.beforeGameOver();
+        if(!this.fail && !this.bg.noPath) {
+            for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
+                let childNode = this.bg.children[i];
+                if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling) {
+                    if(childNode.index === this.lElementNode.pathNumber) {
+                        if(childNode.colorId !== this.lElementNode.colorId) {
+                            this.fail = true;                        
+                            this.beforeGameOver();
+                        }
                     }
-                }
-                if(childNode.index === this.rElementNode.pathNumber) {
-                    if(childNode.colorId !== this.rElementNode.colorId) {
-                        this.fail = true;  
-                        this.beforeGameOver();
+                    if(childNode.index === this.rElementNode.pathNumber) {
+                        if(childNode.colorId !== this.rElementNode.colorId) {
+                            this.fail = true;  
+                            this.beforeGameOver();
+                        }
                     }
-                }
-            }                   
+                }                   
+            }
         }
+        
         // 刷新分值逻辑
         this.getScore();
-        if(this.data.score % 20 === 0 && this.data.score !== 0) {
+        if(this.data.score % 5 === 0 && this.data.score !== 0 
+            && this.keyNode.getChildByName('switch').active === true) {
+            this.keyNode.getChildByName('switch').active = false;
+            this.keyNode.getChildByName('combineEffect').active = true;
+            this.keyNode.getChildByName('combine').active = true;
+        }        
+        
+    },
+
+    combine: function() {
+        if(this.clickedLeft || this.clickedRight) {
+            return;
+        }
+        this.clickedLeft = true;
+        this.clickedRight = true;
+        // 播放动画
+        if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
+            this.keyNode.getChildByName('combineEffect').active = false;
+            this.keyNode.getChildByName('combine').active = false;
+            if(this.keyNode.getChildByName('black-LShift').active) {
+                this.keyNode.getChildByName('black-LShift').active = false;
+                var lActive = this.keyNode.getChildByName('black-LShift');
+            } else {
+                this.keyNode.getChildByName('white-LShift').active = false;
+                var lActive = this.keyNode.getChildByName('white-LShift');
+            }
+            if(this.keyNode.getChildByName('black-RShift').active) {
+                this.keyNode.getChildByName('black-RShift').active = false;
+                var rActive = this.keyNode.getChildByName('black-RShift');
+            } else {
+                this.keyNode.getChildByName('white-RShift').active = false;
+                var rActive = this.keyNode.getChildByName('white-RShift');
+            }
             this.bg.noPath = true;
+            this.lElementNode.stopActionByTag(1);
+            this.rElementNode.stopActionByTag(1);
+            if(this.lElementNode.pathNumber === 1) {
+                var posX1 = this.data.elementPathLineX_1;
+            } else {
+                var posX1 = this.data.elementPathLineX_2;
+            }
+            if(this.rElementNode.pathNumber === 3) {
+                var posX2 = this.data.elementPathLineX_3;
+            } else {
+                var posX2 = this.data.elementPathLineX_4;
+            }
+            this.animation.playFuse(this.lElementNode, this.rElementNode, posX1, posX2);
             this.scheduleOnce(function() {
                 this.bg.noPath = false;
+                this.keyNode.getChildByName('switch').active = true;
+                this.keyNode.getChildByName('combineEffect').active = false;
+                this.keyNode.getChildByName('combine').active = false;
+                lActive.active = true;
+                rActive.active = true;
             }, 5);
-        }        
+        }
         
     },
 
@@ -363,6 +416,7 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
+        this.keyNode.getChildByName('combineEffect').active = false;
         this.fail = true; // 不再触发update失败逻辑
         cc.director.resume();
         for(let i = 0; i < this.node.childrenCount; i++) {

@@ -149,14 +149,18 @@ cc.Class({
             this.createPath(this.colorSequence[1], this.totalLength, 2, this.pathX_2, posY);
             this.createPath(this.colorSequence[2], this.totalLength, 3, this.pathX_3, posY);
             this.createPath(this.colorSequence[3], this.totalLength, 4, this.pathX_4, posY);
-            if(this.node.noPath === true) {
-                let count = this.node.childrenCount;
-                for(let i = 1; i < 5; i++) {
-                    this.animation.playFalling(this.node.children[count - i], this.recyclePath.bind(this));
-                    this.node.children[count - i].falling = true;
+        }
+        if(this.node.noPath === true) {
+            let count = this.node.childrenCount;
+            for(let i = 0; i < count; i++) {
+                let childNode = this.node.children[i];
+                if(!childNode.falling) {
+                    this.animation.playFalling(childNode, this.recyclePath.bind(this));
+                    childNode.falling = true;
                 }
                 
             }
+            
         }
         this.speedUp();
     },
