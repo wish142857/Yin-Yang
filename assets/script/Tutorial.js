@@ -121,9 +121,13 @@ cc.Class({
         this.down2 = this.node.getChildByName('down2');
         this.down3 = this.node.getChildByName('down3');
         this.down4 = this.node.getChildByName('down4');
-
+        this.detail1 = this.node.getChildByName('Details').getChildByName('detail1');
+        this.detail2 = this.node.getChildByName('Details').getChildByName('detail2');
+        this.detail3 = this.node.getChildByName('Details').getChildByName('detail3');
+        this.detail1.active = true;
+        this.detail2.active = false;
+        this.detail3.active = false;
         this.stage = 1;
-    
     },
 
     onDestroy: function() {
@@ -132,41 +136,46 @@ cc.Class({
     start: function () {
     },
 
-    update: function (dt) {        
-        if(this.leftPressed && this.rightPressed && this.stage === 1) {
+    update: function (dt) {
+        if((!this.leftPressed || !this.rightPressed) && this.stage === 1) {
+
+        }        
+        else if(this.leftPressed && this.rightPressed && this.stage === 1) {
             this.stage = 2;
+            this.detail1.active = false;
+            this.detail2.active = true;
             this.animation.playTutorialFall(this.down1);
             this.animation.playTutorialFall(this.down2);
             this.animation.playTutorialFall(this.down3);
             this.animation.playTutorialFall(this.down4);
             this.keyNode.getChildByName('switch').active = true;
         }
-        if(this.stage === 2 && this.switched) {
+        else if(this.stage === 2 && this.switched) {
             this.stage = 3;
         }
-        if(this.stage === 3) {
+        else if(this.stage === 3) {
             this.up1.y -= 5;
             this.up2.y -= 5;
             this.up3.y -= 5;
             this.up4.y -= 5;
+            this.detail2.active = false;
+            this.detail3.active = true;
             if(this.up1.y <= -this.up1.height * 0.5) {
                 this.stage = 4;
             }
         }
-        if(this.stage === 4) {
+        else if(this.stage === 4) {
             this.stage = 5;
             for(let i = 0; i < this.node.childrenCount; i++) {
                 if(this.node.children[i].name !== 'Shadow') {
-                    this.node.children[i].runAction(cc.fadeTo(1.5, 0));
+                    this.node.children[i].runAction(cc.fadeTo(1, 0));
                 } else {
-                    this.node.children[i].runAction(cc.fadeTo(1.5, 255));
+                    this.node.children[i].runAction(cc.fadeTo(1, 255));
                 }
             }
-            //this.node.
-            //this
             this.scheduleOnce(function() {
                 cc.director.loadScene('home');
-            }, 1.5);
+            }, 1);
         }
     },
 
@@ -297,7 +306,16 @@ cc.Class({
         // *** 回到主页 ***
         // return;
         cc.director.resume();
-        cc.director.loadScene('home');
+        for(let i = 0; i < this.node.childrenCount; i++) {
+            if(this.node.children[i].name !== 'Shadow') {
+                this.node.children[i].runAction(cc.fadeTo(1, 0));
+            } else {
+                this.node.children[i].runAction(cc.fadeTo(1, 255));
+            }
+        }
+        this.scheduleOnce(function() {
+            cc.director.loadScene('home');
+        }, 1);
     },
 
     switchMute: function (isMute) {

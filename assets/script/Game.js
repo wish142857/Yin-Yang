@@ -126,6 +126,7 @@ cc.Class({
         this.audio.playMusic(this.audio.music1);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         this.fail = false;
+        this.data.gameSpeed = 5;
     },
 
     onDestroy: function() {
@@ -145,8 +146,8 @@ cc.Class({
             let childNode = this.bg.children[i];
             if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling && !this.fail) {
                 if(childNode.index === this.lElementNode.pathNumber) {
-                    if(childNode.colorId !== this.lElementNode.colorId) {     
-                        this.fail = true;                   
+                    if(childNode.colorId !== this.lElementNode.colorId) {
+                        this.fail = true;                        
                         this.beforeGameOver();
                     }
                 }
@@ -340,8 +341,18 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
+        this.fail = true; // 不再触发update失败逻辑
         cc.director.resume();
-        cc.director.loadScene('home');
+        for(let i = 0; i < this.node.childrenCount; i++) {
+            if(this.node.children[i].name !== 'Shadow') {
+                this.node.children[i].runAction(cc.fadeTo(1, 0));
+            } else {
+                this.node.children[i].runAction(cc.fadeTo(1, 255));
+            }
+        }
+        this.scheduleOnce(function() {
+            cc.director.loadScene('home');
+        }, 1);
     },
 
     switchMute: function (isMute) {
