@@ -84,7 +84,7 @@ cc.Class({
         var screenSize = cc.winSize;
         this.screenWidth = screenSize.width;
         this.screenHeight = screenSize.height;
-        
+        this.score = 0;
     },
 
     update: function (dt) {

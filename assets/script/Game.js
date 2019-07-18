@@ -127,6 +127,7 @@ cc.Class({
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         this.fail = false;
         this.data.gameSpeed = 5;
+        this.data.score = 0;
     },
 
     onDestroy: function() {
@@ -140,7 +141,8 @@ cc.Class({
     update: function (dt) {
         //if (this.isPaused)
         //    return;
-
+        this.clickedLeft = false;
+        this.clickedRight = false;
         // 判定死亡逻辑
         for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
             let childNode = this.bg.children[i];
@@ -159,19 +161,30 @@ cc.Class({
                 }
             }                   
         }
-        // 加分逻辑
-        this.increaseScore(this.data.gameSpeed);        
+        // 刷新分值逻辑
+        this.getScore();
+        if(this.data.score % 20 === 0 && this.data.score !== 0) {
+            this.bg.noPath = true;
+            this.scheduleOnce(function() {
+                this.bg.noPath = false;
+            }, 5);
+        }        
         
     },
 
-    increaseScore: function () {
+    getScore: function () {
         // *** 增加分数 ***
-        this.score = this.score + 1;
-        this.scoreNode.getComponent(cc.Label).string = this.score;
+        //this.data.score = this.data.score + 1;
+        this.scoreNode.getComponent(cc.Label).string = this.data.score;
     },
 
     leftShift: function () {
         // *** 进行左切换 ***
+        
+        if(this.clickedLeft) {
+            return;
+        }
+        this.clickedLeft = true;
         // 播放动画
         if(this.animation.isLeftMoving === false) {
             if(this.lElementNode.pathNumber === 1) {
@@ -188,6 +201,10 @@ cc.Class({
 
     rightShift: function () {
         // *** 进行右切换 ***
+        if(this.clickedRight) {
+            return;
+        }
+        this.clickedRight = true;
         // 播放动画
         if(this.animation.isRightMoving === false) {
             if(this.rElementNode.pathNumber === 3) {
@@ -203,6 +220,11 @@ cc.Class({
 
     switch: function () {
         // *** 进行交换 ***
+        if(this.clickedLeft || this.clickedRight) {
+            return;
+        }
+        this.clickedLeft = true;
+        this.clickedRight = true;
         // 播放动画
         if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
             var posX1 = this.data.paths[this.rElementNode.pathNumber];
@@ -325,13 +347,13 @@ cc.Class({
         // 暂停当前场景
         cc.director.pause();
         // 结算分数更新
-        this.resultNode.getChildByName('score').getComponent(cc.Label).string = this.score;
+        this.resultNode.getChildByName('score').getComponent(cc.Label).string = this.data.score;
         // 结算评价更新
-        if (this.score >= this.data.scoreA)
+        if (this.data.score >= this.data.scoreA)
             this.resultNode.getChildByName('scoreA').active = true;
-        else if (this.score >= this.data.scoreB)
+        else if (this.data.score >= this.data.scoreB)
             this.resultNode.getChildByName('scoreB').active = true;
-        else if (this.score >= this.data.scoreC)
+        else if (this.data.score >= this.data.scoreC)
             this.resultNode.getChildByName('scoreC').active = true;
         else
             this.resultNode.getChildByName('scoreD').active = true;

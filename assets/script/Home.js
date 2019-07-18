@@ -5,6 +5,9 @@
 var AudioManager = require('AudioManager');
 var AnimationManager = require('AnimationManager');
 var DataManager = require('DataManager');
+var RankList = require('RankList');
+
+
 cc.Class({
     extends: cc.Component,
 
@@ -13,7 +16,7 @@ cc.Class({
             default: null,
             type: AudioManager
         },
-        animation: {                        // 全局动画
+        animation: {                        // 全局动画引用
             default: null,
             type: AnimationManager
         },
@@ -21,18 +24,24 @@ cc.Class({
             default: null,
             type: DataManager
         },
-        option: {
+        rankList: {                         // 排行榜引用
+            default: null,
+            type: RankList
+        },
+        option: {                           // 选择结点引用
             default: null,
             type: cc.Node
         }
     },
 
     onLoad: function () {
+        // 开始引用
         this.data = cc.find('DataManager').getComponent('DataManager');
         this.audio = cc.find('AudioManager').getComponent('AudioManager');
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
+        this.rankList = cc.find('RankList').getComponent('RankList');
         this.option= this.node.getChildByName('option');
-        
+        cc.director.preloadScene('game');
         // 初始化音乐按钮（默认非静音）
         this.switchMute(false);
     },
@@ -65,13 +74,10 @@ cc.Class({
 
     showRankingList: function() {
         // *** 显示排行 ***
-        cc.log('showRankingList');
+        console.log('showRankingList');
+        this.rankList.openRankingList();
     },
 
-    showSettingInterface: function() {
-        // *** 显示设置界面 ***
-        cc.log('showSettingInterface');
-    },
 
     exitGame: function () {
         // *** 退出游戏 ***

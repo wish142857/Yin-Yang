@@ -110,7 +110,7 @@ cc.Class({
         this.createPath(0, this.totalLength, 4, this.pathX_4, this.halfScreenHeight);
         //this.createPath(1, this.screenHeight);
         this.counter = 0;
-        
+        this.node.noPath = false;
     },
 
     onDestroy: function() {
@@ -136,18 +136,27 @@ cc.Class({
                 if(childNode.y + childNode.height <= this.baselineY + this.grayLength) {
                     this.animation.playFalling(childNode, this.recyclePath.bind(this));
                     childNode.falling = true;
+                    
                 }
                 
             }
         }    
         if(refresh) {
             this.pathGenerator();
+            this.data.score++;
             var posY = this.halfScreenHeight - this.lengthRecorder;
             this.createPath(this.colorSequence[0], this.totalLength, 1, this.pathX_1, posY);
             this.createPath(this.colorSequence[1], this.totalLength, 2, this.pathX_2, posY);
             this.createPath(this.colorSequence[2], this.totalLength, 3, this.pathX_3, posY);
             this.createPath(this.colorSequence[3], this.totalLength, 4, this.pathX_4, posY);
-
+            if(this.node.noPath === true) {
+                let count = this.node.childrenCount;
+                for(let i = 1; i < 5; i++) {
+                    this.animation.playFalling(this.node.children[count - i], this.recyclePath.bind(this));
+                    this.node.children[count - i].falling = true;
+                }
+                
+            }
         }
         this.speedUp();
     },
