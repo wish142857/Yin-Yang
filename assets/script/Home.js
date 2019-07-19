@@ -24,11 +24,15 @@ cc.Class({
             default: null,
             type: DataManager
         },
-        rankList: {                         // 排行榜引用
+        rankList: {                         // 排行榜组件引用
             default: null,
             type: RankList
         },
         option: {                           // 选择结点引用
+            default: null,
+            type: cc.Node
+        },
+        rlClose: {                          // 排行榜关闭结点引用
             default: null,
             type: cc.Node
         }
@@ -41,14 +45,15 @@ cc.Class({
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         this.rankList = cc.find('RankList').getComponent('RankList');
         this.option= this.node.getChildByName('option');
+        this.rlClose = this.node.getChildByName('close');
         cc.director.preloadScene('game');
         // 初始化音乐按钮（默认非静音）
         this.switchMute(false);
+        // 初始化排行榜关闭结点（默认不激活）
+        this.rlClose.active = false;
     },
 
     start: function () {
-        
-        
     },
 
     update: function (dt) {
@@ -72,12 +77,21 @@ cc.Class({
         }, 1501);
     },
 
-    showRankingList: function() {
+    openRankingList: function() {
         // *** 显示排行 ***
-        console.log('showRankingList');
+        console.log('Call openRankingList()');
+        this.option.pauseSystemEvents(true);
+        this.rlClose.active = true;
         this.rankList.openRankingList();
     },
 
+    closeRankingList: function() {
+        // *** 关闭排行榜 ***
+        console.log('Call closeRankingList()');
+        this.option.resumeSystemEvents(true);
+        this.rlClose.active = false;
+        this.rankList.closeRankingList();
+    },
 
     exitGame: function () {
         // *** 退出游戏 ***

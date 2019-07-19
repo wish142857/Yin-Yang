@@ -111,7 +111,7 @@ cc.Class({
         // 初始化暂停-继续按钮
         this.gameContinue();
         // *** 播放背景音乐 ***
-        this.audio.playMusic(this.audio.music1);
+        // this.audio.playMusic(this.audio.music1);
 
         this.up1 = this.node.getChildByName('up1');
         this.up2 = this.node.getChildByName('up2');

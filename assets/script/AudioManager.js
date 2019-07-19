@@ -21,10 +21,10 @@ cc.Class({
             default: 0,
             type: cc.Float
         },
-        music1: {                   // 音乐预载，利用属性检查器加入
+        /*music1: {                   // 音乐预载，利用属性检查器加入
             default: null,   
             type: cc.AudioClip
-        }
+        }*/
 
     },
 

@@ -30,8 +30,8 @@ cc.Class({
         if(!this.sharedCanvas) {
             let openDataContext = wx.getOpenDataContext();
             this.sharedCanvas = openDataContext.canvas;
-            this.sharedCanvas.width = 808;
-            this.sharedCanvas.height = 1460;
+            this.sharedCanvas.width = 600;
+            this.sharedCanvas.height = 1000;
         }
         // * 纹理初始化 *
         if (!this.texture) {
@@ -42,13 +42,11 @@ cc.Class({
     openRankingList: function () {
         // *** 打开排行榜 ***
         // *** （对外接口） ***
-        console.log('openRankingList');
+        console.log('RankList: openRankingList');
         // * 初始化 *
         this.init();
         // * 向子域发送更新信息 *
         wx.getOpenDataContext().postMessage({ action: 'UpdateRankList' });
-        // * 激活排行榜节点 *
-        this.node.active = true;
         // * 开始刷新排行榜 *
         // 防止子域响应慢，或者头像加载慢，每隔0.7s 绘制1次 总共绘制6次
         this.refreshStart = true;
@@ -60,10 +58,9 @@ cc.Class({
     closeRankingList: function() {
         // *** 关闭排行榜 ***
         // *** （对外接口） ***
-        // * 关闭排行榜节点 *
-        this.node.active = false;
-        // * 资源清理 *
-        this.hide;
+        console.log('RankList: closeRankingList');
+        // * 开始隐藏排行榜 *
+        this.hide();
     },
 
     uploadRankingData: function (username, score) {
@@ -80,7 +77,6 @@ cc.Class({
             success: function (res) {
                 console.log(`Upload Success`);
             },
-
             fail: function (res) {
                 console.log(`Upload Fail`);
             },
@@ -100,6 +96,7 @@ cc.Class({
     },
 
     show: function () {
+        // * 展示画布 *
         if (this.spriteFrame) {
             this.spriteFrame.clearTexture();
         }
@@ -109,9 +106,12 @@ cc.Class({
             this.spriteFrame = new cc.SpriteFrame(this.texture);
             this.rankSprite.spriteFrame = this.spriteFrame;
         }
+        // * 激活精灵节点 *
+        this.node.getComponent(cc.Sprite).enabled = true;
     },
 
     hide: function () {
+        // * 销毁画布 *
         if (this.spriteFrame) {
             this.spriteFrame.clearTexture();
             this.spriteFrame = null;
@@ -120,5 +120,7 @@ cc.Class({
             this.texture.destroy();
             this.texture = null;
         }
+        // * 关闭精灵节点 *
+        this.node.getComponent(cc.Sprite).enabled = false;
     },
 });

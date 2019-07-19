@@ -6,6 +6,7 @@
 var DataManager = require('DataManager');
 var AudioManager = require('AudioManager');
 var AnimationManager = require('AnimationManager');
+var RankList = require('RankList');
 
 
 cc.Class({
@@ -62,8 +63,11 @@ cc.Class({
         animation: {                        // 全局动画引用
             default: null,
             type: AnimationManager
+        },
+        rankList: {                         // 排行榜组件引用
+            default: null,
+            type: RankList
         }
-
     },
 
     onLoad: function () {
@@ -77,6 +81,8 @@ cc.Class({
         this.audio = cc.find('AudioManager').getComponent('AudioManager');
         // 引用全局动画
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
+        // 引用排行榜组件
+        this.rankList = cc.find('RankList').getComponent('RankList');
         // 引用背景节点
         this.bg = this.node.getChildByName('Background');
         // 引用暂停界面阴影节点
@@ -381,7 +387,6 @@ cc.Class({
         this.node.resumeSystemEvents(true);
         // 恢复当前场景
         cc.director.resume();
-        
     },
 
     gameRestart: function() {
@@ -392,7 +397,6 @@ cc.Class({
 
     gameOver: function() {
         // *** 游戏结束 ***
-        
         // 暂停所有系统事件
         this.node.pauseSystemEvents(true);
         // 恢复结算栏事件
@@ -412,6 +416,16 @@ cc.Class({
             this.resultNode.getChildByName('scoreD').active = true;
         // 激活结算界面
         this.resultNode.active = true;
+    },
+
+
+    uploadScore() {
+        // *** 上传分数 ***
+        console.log('Call uploadScore()');
+        // 上传数据
+        /// this.rankList.uploadRankingData('???', this.score);
+        // 激活成功图标
+        this.resultNode.getChildByName('uploadSuccess').active = true;
     },
 
     returnHome: function() {
