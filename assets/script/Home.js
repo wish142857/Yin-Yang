@@ -62,7 +62,7 @@ cc.Class({
 
     startGame: function () {
         // *** 开始游戏 ***
-        this.animation.startGame(this.option, -this.data.screenHeight - 50);
+        this.animation.startGame(this.option, -this.data.screenHeight - 30);
         setTimeout(function() {
             cc.director.loadScene('game');
         }, 1501);
@@ -70,8 +70,7 @@ cc.Class({
 
     showIntroduction: function () {
         // *** 游戏介绍 ***
-        cc.log('showIntroduction');
-        this.animation.startGame(this.option, -this.data.screenHeight - 50);
+        this.animation.startGame(this.option, -this.data.screenHeight - 30);
         setTimeout(function() {
             cc.director.loadScene('tutorial');
         }, 1501);

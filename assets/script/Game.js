@@ -2,12 +2,10 @@
 // 游戏场景主脚本
 // *************************
 
-
 var DataManager = require('DataManager');
 var AudioManager = require('AudioManager');
 var AnimationManager = require('AnimationManager');
 var RankList = require('RankList');
-
 
 cc.Class({
     extends: cc.Component,
@@ -121,23 +119,39 @@ cc.Class({
         // 初始化暂停-继续按钮
         this.gameContinue();
         // *** 按键栏初始化 ***
-        this.keyNode.getChildByName('switch').active = true;
-        this.keyNode.getChildByName('black-LShift').active = true;
-        this.keyNode.getChildByName('black-RShift').active = false;
-        this.keyNode.getChildByName('white-LShift').active = false;
-        this.keyNode.getChildByName('white-RShift').active = true;
+        this.switchKey = this.keyNode.getChildByName('switch');
+        this.switchKey.active = true;
+        this.blackLShiftKey = this.keyNode.getChildByName('black-LShift');
+        this.blackLShiftKey.active = true;
+        this.blackRShiftKey = this.keyNode.getChildByName('black-RShift');
+        this.blackRShiftKey.active = false;
+        this.whiteLShiftKey = this.keyNode.getChildByName('white-LShift');
+        this.whiteLShiftKey.active = false;
+        this.whiteRShiftKey = this.keyNode.getChildByName('white-RShift');
+        this.whiteRShiftKey.active = true;
+        this.combineKey = this.keyNode.getChildByName('combine');
+        this.combineKey.active = false;
+        this.combineKeyAction = this.keyNode.getChildByName('combineKeyAction');
+        this.combineKeyAction.active = false;
+        this.combineEffect = this.keyNode.getChildByName('combineEffect');
+        this.combineEffect.active = false;
+        //this.keyNode.getChildByName('black-LShift').active = true;
+        //this.keyNode.getChildByName('black-RShift').active = false;
+        //this.keyNode.getChildByName('white-LShift').active = false;
+        //this.keyNode.getChildByName('white-RShift').active = true;
         // *** 结算栏初始化 ***
         this.resultNode.active = false;
         // *** 播放背景音乐 ***
-        this.audio.playMusic(this.audio.music1);
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        this.fail = false;
+        // this.audio.playMusic(this.audio.music1);
+
+        // 一些游戏全局属性设置
+        this.data.fail = false;
         this.data.gameSpeed = 5;
         this.data.score = 0;
     },
 
     onDestroy: function() {
-        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+
     },
 
     start: function () {
@@ -145,24 +159,23 @@ cc.Class({
     },
 
     update: function (dt) {
-        //if (this.isPaused)
-        //    return;
+
         this.clickedLeft = false;
         this.clickedRight = false;
         // 判定死亡逻辑
-        if(!this.fail && !this.bg.noPath) {
+        if(!this.data.fail && !this.bg.noPath) {
             for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
                 let childNode = this.bg.children[i];
                 if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling) {
                     if(childNode.index === this.lElementNode.pathNumber) {
                         if(childNode.colorId !== this.lElementNode.colorId) {
-                            this.fail = true;                        
+                            this.data.fail = true;                        
                             this.beforeGameOver();
                         }
                     }
                     if(childNode.index === this.rElementNode.pathNumber) {
                         if(childNode.colorId !== this.rElementNode.colorId) {
-                            this.fail = true;  
+                            this.data.fail = true;  
                             this.beforeGameOver();
                         }
                     }
@@ -173,73 +186,21 @@ cc.Class({
         // 刷新分值逻辑
         this.getScore();
         if(this.data.score % 5 === 0 && this.data.score !== 0 
-            && this.keyNode.getChildByName('switch').active === true) {
-            this.keyNode.getChildByName('switch').active = false;
-            this.keyNode.getChildByName('combineEffect').active = true;
-            this.keyNode.getChildByName('combine').active = true;
+            && this.switchKey.active === true) {
+            this.switchKey.active = false;
+            this.combineEffect.active = true;
+            this.combineKey.active = true;
         }        
         
     },
 
-    combine: function() {
-        if(this.clickedLeft || this.clickedRight) {
-            return;
-        }
-        this.clickedLeft = true;
-        this.clickedRight = true;
-        // 播放动画
-        if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
-            this.keyNode.getChildByName('combineEffect').active = false;
-            this.keyNode.getChildByName('combine').active = false;
-            if(this.keyNode.getChildByName('black-LShift').active) {
-                this.keyNode.getChildByName('black-LShift').active = false;
-                var lActive = this.keyNode.getChildByName('black-LShift');
-            } else {
-                this.keyNode.getChildByName('white-LShift').active = false;
-                var lActive = this.keyNode.getChildByName('white-LShift');
-            }
-            if(this.keyNode.getChildByName('black-RShift').active) {
-                this.keyNode.getChildByName('black-RShift').active = false;
-                var rActive = this.keyNode.getChildByName('black-RShift');
-            } else {
-                this.keyNode.getChildByName('white-RShift').active = false;
-                var rActive = this.keyNode.getChildByName('white-RShift');
-            }
-            this.bg.noPath = true;
-            this.lElementNode.stopActionByTag(1);
-            this.rElementNode.stopActionByTag(1);
-            if(this.lElementNode.pathNumber === 1) {
-                var posX1 = this.data.elementPathLineX_1;
-            } else {
-                var posX1 = this.data.elementPathLineX_2;
-            }
-            if(this.rElementNode.pathNumber === 3) {
-                var posX2 = this.data.elementPathLineX_3;
-            } else {
-                var posX2 = this.data.elementPathLineX_4;
-            }
-            this.animation.playFuse(this.lElementNode, this.rElementNode, posX1, posX2);
-            this.scheduleOnce(function() {
-                this.bg.noPath = false;
-                this.keyNode.getChildByName('switch').active = true;
-                this.keyNode.getChildByName('combineEffect').active = false;
-                this.keyNode.getChildByName('combine').active = false;
-                lActive.active = true;
-                rActive.active = true;
-            }, 5);
-        }
-        
-    },
-
     getScore: function () {
-        // *** 增加分数 ***
-        //this.data.score = this.data.score + 1;
+        // *** 获取分数 ***
         this.scoreNode.getComponent(cc.Label).string = this.data.score;
     },
 
     leftShift: function () {
         // *** 进行左切换 ***
-        
         if(this.clickedLeft) {
             return;
         }
@@ -320,37 +281,59 @@ cc.Class({
     
     },
 
-    // 测试使用
-    onKeyDown (event) {      
-        switch(event.keyCode) {
-            case cc.macro.KEY.a:
-                this.leftShift();
-                break;
-            case cc.macro.KEY.d:
-                this.rightShift();
-                break;
-            case cc.macro.KEY.s:
-                this.switch();
-                break;
-            case cc.macro.KEY.p:
-                this.increaseScore();
-                break;
-            case cc.macro.KEY.t:
-                this.test();
-            default:
-                break;
+    combine: function() {
+        // 进行双元素合并
+        if(this.clickedLeft || this.clickedRight) {
+            return;
         }
-    },
-
-    test: function() {
-        // *** 测试函数 ***
-        // *** t 键触发 ***
-        this.gameOver();
-    },
-
-    collision: function () {
-        // *** 碰撞检测 ***
-        return false;
+        this.clickedLeft = true;
+        this.clickedRight = true;
+        // 播放动画
+        if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
+            // 隐藏左右中间按键直至无敌状态结束
+            this.combineEffect.active = false;
+            this.combineKey.active = false;
+            this.combineKeyAction.active = true;
+            this.animation.playWordFade(this.combineKeyAction);
+            // 记录左右按键黑白颜色
+            if(this.blackLShiftKey.active) {
+                this.blackLShiftKey.active = false;
+                var lActive = this.blackLShiftKey;
+            } else {
+                this.whiteLShiftKey.active = false;
+                var lActive = this.whiteLShiftKey;
+            }
+            if(this.blackRShiftKey.active) {
+                this.blackRShiftKey.active = false;
+                var rActive = this.blackRShiftKey;
+            } else {
+                this.whiteRShiftKey.active = false;
+                var rActive = this.whiteRShiftKey;
+            }
+            this.bg.noPath = true;
+            this.lElementNode.stopActionByTag(1);
+            this.rElementNode.stopActionByTag(1);
+            if(this.lElementNode.pathNumber === 1) {
+                var posX1 = this.data.elementPathLineX_1;
+            } else {
+                var posX1 = this.data.elementPathLineX_2;
+            }
+            if(this.rElementNode.pathNumber === 3) {
+                var posX2 = this.data.elementPathLineX_3;
+            } else {
+                var posX2 = this.data.elementPathLineX_4;
+            }
+            this.animation.playFuse(this.lElementNode, this.rElementNode, posX1, posX2);
+            this.scheduleOnce(function() {
+                this.bg.noPath = false;
+                this.switchKey.active = true;
+                this.combineEffect.active = false;
+                this.combineKey.active = false;
+                lActive.active = true;
+                rActive.active = true;
+            }, 5); // 无敌时间五秒后恢复正常
+        }
+        
     },
 
     gamePause: function() {
@@ -431,7 +414,7 @@ cc.Class({
     returnHome: function() {
         // *** 回到主页 ***
         this.keyNode.getChildByName('combineEffect').active = false;
-        this.fail = true; // 不再触发update失败逻辑
+        this.data.fail = true; // 不再触发update失败逻辑
         cc.director.resume();
         for(let i = 0; i < this.node.childrenCount; i++) {
             if(this.node.children[i].name !== 'Shadow') {
@@ -474,7 +457,6 @@ cc.Class({
         // *** 按下继续按钮 游戏暂停 ***
         // 背景阴影开启
         this.animation.playShadeOn(this.shade, this.gamePause.bind(this));
-        //this.gamePause();
     },
 
     clickPause: function () {

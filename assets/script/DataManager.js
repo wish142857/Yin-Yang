@@ -66,7 +66,21 @@ cc.Class({
             default: 20,
             type: cc.Integer,
             tooltip: ' 甲 评价最低分'
-        }
+        },
+        fail: {
+            default: false,
+            tooltip: ' 是否失败（或者回到主菜单）'
+        }, 
+        gameSpeed: {
+            default: 0,
+            type: cc.Integer,
+            tooltip: '轨道下落速度'
+        },
+        score: {
+            default: 0,
+            type: cc.Integer,
+            tooltip: '游戏得分'
+        },
     },
 
     onLoad: function () {

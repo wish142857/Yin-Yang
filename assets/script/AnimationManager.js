@@ -1,7 +1,6 @@
 // *************************
 // 动画管理器脚本
 // *************************
-//var DataManager = require("DataManager");
 cc.Class({
     extends: cc.Component,
 
@@ -38,42 +37,46 @@ cc.Class({
             default: 0,
             type: cc.Float,
             tooltip: '暂停时渐隐时间'
+        },
+        fallDuration: {
+            default: 0,
+            type: cc.Float,
+            tooltip: '轨道坍塌动画时间'
         }
     },
 
     setShiftAction: function(posX) {  
-        // 移动动画      
+        // *** 元素移动动画 ***      
         var shift = cc.moveTo(this.shiftDuration, cc.v2(posX, this.elementBaseLineY));
         return shift;
     },
 
     setSpinAction: function() {
-        // 旋转动画
+        // *** 元素旋转动画 *** 
         var rotate = cc.rotateBy(this.spinDuration, -180);
-        rotate.setTag(1);
+        rotate.setTag(1); // 标记动作，为了以后停止时找到
         return cc.repeatForever(rotate);
     },
 
     setBlinkAction: function(duration) {
+        // *** 元素闪烁动画 *** 
         var blink = cc.sequence(cc.fadeTo(duration, 0), cc.fadeTo(duration, 255));
         return blink;
     },
 
     playShift: function(node, posX, isLeftNode) {
-        // 单元素移动动画播放
+        // *** 单元素移动动画播放 *** 
         var started = cc.callFunc(function() {
             if(isLeftNode) {
                 this.isLeftMoving = true;
-            }
-            else {
+            } else {
                 this.isRightMoving = true;
             }
         }, this);
         var finished = cc.callFunc(function() {
             if(isLeftNode) {
                 this.isLeftMoving = false;
-            }
-            else {
+            } else {
                 this.isRightMoving = false;
             }
         }, this);
@@ -81,7 +84,7 @@ cc.Class({
     },
 
     playSwitch: function(node1, node2, posX1, posX2) {
-        // 两元素交换动画播放
+        // *** 双元素交换动画播放 *** 
         var started = cc.callFunc(function() {
                 this.isLeftMoving = true;
                 this.isRightMoving = true;
@@ -97,33 +100,12 @@ cc.Class({
     },
 
     playSpin: function(node) {
-        // 旋转动画播放        
+        // *** 双元素旋转动画播放 ***       
         node.runAction(this.setSpinAction());
     },
 
-    playShadeOn: function(node, gamePause) {
-        var finished = cc.callFunc(gamePause, this);
-        node.runAction(cc.sequence(cc.fadeTo(this.fadeDuration, 200), finished));
-    },
-
-    playShadeOff: function(node) {
-        node.runAction(cc.fadeTo(this.fadeDuration, 0));
-    },
-
-    playFalling: function(node, recycle) {
-        
-        var finished = cc.callFunc(recycle, this);
-        var moveUp = cc.moveBy(2, 0, node.height * 0.5);
-        var falling = cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0), moveUp);
-        node.runAction(cc.sequence(falling, finished));
-    },
-
-    playTutorialFall: function(node) {
-        var moveDown = cc.moveBy(2, 0, -node.height * 0.5);
-        node.runAction(cc.spawn(cc.fadeTo(2, 0), cc.scaleTo(2, 0), moveDown));
-    },
-
     playFuse: function(node1, node2, posX1, posX2) {
+        // *** 双元素合并动画 *** 
         var toCenter1= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 2));
         var toCenter2= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 2));
         var goBack1 = cc.spawn(cc.moveTo(this.shiftDuration, posX1, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 1));
@@ -134,12 +116,46 @@ cc.Class({
         node2.runAction(cc.sequence(toCenter2, spin2, goBack2));
     },
 
+    playWordFade: function(node) {
+        // *** “合”按钮渐隐飞出动画 *** 
+        var zoomFade = cc.spawn(cc.fadeTo(1,0), cc.scaleTo(1,3), cc.moveBy(1, 0, 400));
+        var finished = cc.callFunc(function() {
+            node.active = false;
+            node.opacity = 255;
+            node.scale = 1;
+            node.y -= 400;
+        }, this)
+        node.runAction(cc.sequence(zoomFade, finished));
+    },
+
+    playShadeOn: function(node, gamePause) {
+        // *** 暂停或游戏结束菜单跳出时背景渐暗动画 *** 
+        var finished = cc.callFunc(gamePause, this);
+        node.runAction(cc.sequence(cc.fadeTo(this.fadeDuration, 200), finished));
+    },
+
+    playShadeOff: function(node) {
+        // *** 回到游戏时背景渐亮动画 *** 
+        node.runAction(cc.fadeTo(this.fadeDuration, 0));
+    },
+
+    playFalling: function(node, recycle) {
+        // *** 轨道坍塌动画 *** 
+        var finished = cc.callFunc(recycle, this);
+        var moveUp = cc.moveBy(this.fallDuration, 0, node.height * 0.5);
+        var falling = cc.spawn(cc.fadeTo(this.fallDuration, 0), cc.scaleTo(this.fallDuration, 0), moveUp);
+        node.runAction(cc.sequence(falling, finished));
+    },
+
+    playTutorialFall: function(node) {
+        // *** 教程中轨道坍塌动画 *** 
+        var moveDown = cc.moveBy(this.fallDuration, 0, -node.height * 0.5);
+        node.runAction(cc.spawn(cc.fadeTo(this.fallDuration, 0), cc.scaleTo(this.fallDuration, 0), moveDown));
+    },
+
     startGame: function(node, pullDownDistance) {
+        // *** 开始游戏或教程的菜单下拉动画 *** 
         var pullDown = cc.moveBy(this.pullDownDuration, 0, pullDownDistance).easing(cc.easeExponentialIn());
-        /*var finished = cc.callFunc(function() {
-            cc.log("started");
-            cc.director.loadScene('game');
-        }, this);*/
         node.runAction(pullDown);
     },
 
@@ -154,14 +170,10 @@ cc.Class({
     },
 
     start: function () {
+        
     },
 
     update: function (dt) {
 
     },
-
-    TODO: function () {
-        // *** ??? ***
-    },
-
 });
