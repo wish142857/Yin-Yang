@@ -81,6 +81,10 @@ cc.Class({
             type: cc.Integer,
             tooltip: '游戏得分'
         },
+        hellMode: {
+            default: false,
+            tooltip: '地狱模式是否开启'
+        }
     },
 
     onLoad: function () {
@@ -98,15 +102,10 @@ cc.Class({
         var screenSize = cc.winSize;
         this.screenWidth = screenSize.width;
         this.screenHeight = screenSize.height;
-        this.score = 0;
     },
 
     update: function (dt) {
 
-    },
-
-    TODO: function () {
-        // *** ??? ***
     },
 
 });

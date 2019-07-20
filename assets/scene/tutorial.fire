@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.2655617031553443,
-      "y": 0.2655617031553443,
+      "x": 0.16820313930511474,
+      "y": 0.16820313930511474,
       "z": 1
     },
     "_quat": {
@@ -182,7 +182,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Particle",
+    "_name": "chaos",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -258,7 +258,7 @@
       "__uuid__": "472df5d3-35e7-4184-9e6c-7f41bee65ee3"
     },
     "_texture": null,
-    "_stopped": true,
+    "_stopped": false,
     "playOnLoad": true,
     "autoRemoveOnFinish": false,
     "totalParticles": 756,
@@ -5557,7 +5557,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 640,
-      "height": 1280
+      "height": 1600
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7056,7 +7056,7 @@
       "__id__": 163
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_level": 2,
     "_components": [
       {
@@ -7074,13 +7074,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 197,
-      "height": 283
+      "width": 40,
+      "height": 36
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
       "x": 0.5,
-      "y": 0
+      "y": 0.5
     },
     "_position": {
       "__type__": "cc.Vec3",
@@ -7106,7 +7106,7 @@
     "_skewX": 0,
     "_skewY": 0,
     "groupIndex": 0,
-    "_id": "9eQcwMOW5LBLNMKgCnCOJW"
+    "_id": "6809mWXTxBY53KvPeEgSPP"
   },
   {
     "__type__": "cc.Sprite",
@@ -7119,7 +7119,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "202357bd-42a6-476f-bf67-5fe40bbbff91"
+      "__uuid__": "8cdb44ac-a3f6-449f-b354-7cd48cf84061"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -7134,7 +7134,7 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_id": "3c9xBy61VKJ6opdVMbb4Tn"
+    "_id": "38t8LFBYNPRpJ9vrdUBAC0"
   },
   {
     "__type__": "cc.Node",

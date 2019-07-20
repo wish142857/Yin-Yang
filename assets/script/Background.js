@@ -66,6 +66,25 @@ cc.Class({
             this.whitePathPool.put(path); // 通过 put 接口放入对象池
         }
     },
+
+    start: function () {
+        // 轨道颜色序列
+        this.colorSequence = [1, 0, 1, 0];
+        
+        this.lengthRecorder = 0;
+        this.totalLength = this.pathLength + this.grayLength;
+        this.createPath(1, this.screenHeight, 1, this.pathX_1, 0);
+        this.createPath(0, this.screenHeight, 2, this.pathX_2, 0);
+        this.createPath(1, this.screenHeight, 3, this.pathX_3, 0);
+        this.createPath(0, this.screenHeight, 4, this.pathX_4, 0);
+        var posY = this.halfScreenHeight + (this.totalLength >> 1);
+        this.createPath(1, this.totalLength, 1, this.pathX_1, posY);
+        this.createPath(0, this.totalLength, 2, this.pathX_2, posY);
+        this.createPath(1, this.totalLength, 3, this.pathX_3, posY);
+        this.createPath(0, this.totalLength, 4, this.pathX_4, posY);
+        this.node.noPath = false;
+    },
+
     createPath: function (color, sizeY, index, posX, posY) {
         let path = null;
         // 从对象池中获取
@@ -85,7 +104,7 @@ cc.Class({
         // 属性设置
         path.setContentSize(160, sizeY);
         path.x = posX;
-        path.y = posY || this.halfScreenHeight;
+        path.y = posY;
         path.colorId = color;
         path.index = index;
         path.falling = false;
@@ -102,24 +121,6 @@ cc.Class({
         } else {
             this.whitePathPool.put(path);
         }
-    },
-
-    start: function () {
-        // 轨道颜色序列
-        this.colorSequence = [1, 0, 1, 0];
-        
-        this.lengthRecorder = 0;
-        this.totalLength = this.pathLength + this.grayLength;
-        this.createPath(1, this.screenHeight, 1, this.pathX_1, -this.halfScreenHeight);
-        this.createPath(0, this.screenHeight, 2, this.pathX_2, -this.halfScreenHeight);
-        this.createPath(1, this.screenHeight, 3, this.pathX_3, -this.halfScreenHeight);
-        this.createPath(0, this.screenHeight, 4, this.pathX_4, -this.halfScreenHeight);
-        this.createPath(1, this.totalLength, 1, this.pathX_1, this.halfScreenHeight);
-        this.createPath(0, this.totalLength, 2, this.pathX_2, this.halfScreenHeight);
-        this.createPath(1, this.totalLength, 3, this.pathX_3, this.halfScreenHeight);
-        this.createPath(0, this.totalLength, 4, this.pathX_4, this.halfScreenHeight);
-        this.counter = 0;
-        this.node.noPath = false;
     },
 
     update: function (dt) {
@@ -139,23 +140,27 @@ cc.Class({
             let childNode = this.node.children[i];
             childNode.y -= this.data.gameSpeed;
             if(!childNode.falling) {
-                if(childNode.y + childNode.height <= this.baselineY + this.grayLength) {
+                if(childNode.y + childNode.height / 2 <= this.baselineY + this.grayLength) {
                     this.animation.playFalling(childNode, this.recyclePath.bind(this));
-                    childNode.falling = true;     
+                    childNode.falling = true;
+                    if(childNode.index === 1) this.data.score++;   
                 }    
             }
+            
         } 
         
         // 创建新轨道
         if(refresh) {
-            this.data.score++; // 分数增加
             // 随机生成新轨道，确保不会无解
             this.pathGenerator();
-            var posY = this.halfScreenHeight - this.lengthRecorder;
+            var posY = this.halfScreenHeight - this.lengthRecorder + this.totalLength / 2;
             this.createPath(this.colorSequence[0], this.totalLength, 1, this.pathX_1, posY);
             this.createPath(this.colorSequence[1], this.totalLength, 2, this.pathX_2, posY);
             this.createPath(this.colorSequence[2], this.totalLength, 3, this.pathX_3, posY);
             this.createPath(this.colorSequence[3], this.totalLength, 4, this.pathX_4, posY);
+            if(this.data.hellMode) {
+                this.scheduleOnce(this.pathSwap, 0.5);
+            }
         }
 
         // 无敌状态的特殊逻辑：轨道创建时就坍塌
@@ -169,13 +174,10 @@ cc.Class({
                 }    
             }    
         }
-
-        // 下落加速
-        this.speedUp();
     },
     
     pathGenerator: function() {
-        // *** 轨道序列不与上一组重复，也不会四黑四百 ***
+        // *** 随机生成下一组轨道序列，不与上一组重复，也不会四黑四百 ***
         var temp = [];
         for(let i = 0; i < 4; i++) {
             temp[i] = this.colorSequence[i];
@@ -207,13 +209,32 @@ cc.Class({
         // *** 0,1随机数生成器 ***
         return Math.round(Math.random());
     },
-    
-    speedUp: function() {
-        // *** 加速逻辑 ***
-        this.counter++;
-        if(this.counter % 1800 === 0) {
-            this.data.gameSpeed += 1;
-        }
+
+    pathSwap: function() {
+        // *** 随机交换两条轨道 ***
+        if(this.randomizer()) {
+            // 50%概率交换
+            var childrenCount = this.node.childrenCount;
+            var children = this.node.children;
+            // 左右两组轨道概率五五开
+            if(this.randomizer()) {
+                var colorSub = 1;
+                var childSub = childrenCount - 3;
+            }
+            else {
+                var colorSub = 3;
+                var childSub = childrenCount - 1;
+            }
+            var temp = children[childSub].x;
+            children[childSub].x = children[childSub - 1].x;
+            children[childSub - 1].x = temp;
+            var tempIndex = children[childSub].index;
+            children[childSub].index = children[childSub - 1].index;
+            children[childSub - 1].index = tempIndex;
+            var tempColor = this.colorSequence[colorSub];
+            this.colorSequence[colorSub] = this.colorSequence[colorSub - 1];
+            this.colorSequence[colorSub - 1] = tempColor;
+        }   
     },
 
     onDestroy: function() {

@@ -54,13 +54,12 @@ cc.Class({
     setSpinAction: function() {
         // *** 元素旋转动画 *** 
         var rotate = cc.rotateBy(this.spinDuration, -180);
-        rotate.setTag(1); // 标记动作，为了以后停止时找到
         return cc.repeatForever(rotate);
     },
 
-    setBlinkAction: function(duration) {
+    setBlinkAction: function(duration, minOpacity) {
         // *** 元素闪烁动画 *** 
-        var blink = cc.sequence(cc.fadeTo(duration, 0), cc.fadeTo(duration, 255));
+        var blink = cc.sequence(cc.fadeTo(duration, minOpacity), cc.fadeTo(duration, 255));
         return blink;
     },
 
@@ -94,9 +93,9 @@ cc.Class({
                 this.isRightMoving = false;
         }, this);
         node1.runAction(cc.sequence(started, this.setShiftAction(posX1), finished));
-        node1.runAction(this.setBlinkAction(0.5 * this.shiftDuration));
+        node1.runAction(this.setBlinkAction(0.5 * this.shiftDuration, 0));
         node2.runAction(this.setShiftAction(posX2));
-        node2.runAction(this.setBlinkAction(0.5 * this.shiftDuration));
+        node2.runAction(this.setBlinkAction(0.5 * this.shiftDuration, 0));
     },
 
     playSpin: function(node) {
@@ -106,20 +105,21 @@ cc.Class({
 
     playFuse: function(node1, node2, posX1, posX2) {
         // *** 双元素合并动画 *** 
-        var toCenter1= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 2));
-        var toCenter2= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 2));
+        var toCenter1= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), /*cc.rotateTo(this.shiftDuration, 0), */cc.scaleTo(this.shiftDuration, 2));
+        var toCenter2= cc.spawn(cc.moveTo(this.shiftDuration, 0, this.elementBaseLineY), /*cc.rotateTo(this.shiftDuration, 0), */cc.scaleTo(this.shiftDuration, 2));
         var goBack1 = cc.spawn(cc.moveTo(this.shiftDuration, posX1, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 1));
         var goBack2 = cc.spawn(cc.moveTo(this.shiftDuration, posX2, this.elementBaseLineY), cc.rotateTo(this.shiftDuration, 0), cc.scaleTo(this.shiftDuration, 1));
-        var spin1 = cc.repeat(cc.rotateBy(this.spinDuration, -180), 16);
-        var spin2 = cc.repeat(cc.rotateBy(this.spinDuration, -180), 16);
-        node1.runAction(cc.sequence(toCenter1, spin1, goBack1));
-        node2.runAction(cc.sequence(toCenter2, spin2, goBack2));
+        var blink1 = this.setBlinkAction(0.8, 127);
+        var blink2 = this.setBlinkAction(0.8, 127);
+        node1.runAction(cc.sequence(toCenter1, cc.repeat(blink1, 3), goBack1));
+        node2.runAction(cc.sequence(toCenter2, cc.repeat(blink2, 3), goBack2));
     },
 
     playWordFade: function(node) {
         // *** “合”按钮渐隐飞出动画 *** 
         var zoomFade = cc.spawn(cc.fadeTo(1,0), cc.scaleTo(1,3), cc.moveBy(1, 0, 400));
         var finished = cc.callFunc(function() {
+            // 复原属性
             node.active = false;
             node.opacity = 255;
             node.scale = 1;
@@ -142,8 +142,7 @@ cc.Class({
     playFalling: function(node, recycle) {
         // *** 轨道坍塌动画 *** 
         var finished = cc.callFunc(recycle, this);
-        var moveUp = cc.moveBy(this.fallDuration, 0, node.height * 0.5);
-        var falling = cc.spawn(cc.fadeTo(this.fallDuration, 0), cc.scaleTo(this.fallDuration, 0), moveUp);
+        var falling = cc.spawn(cc.fadeTo(this.fallDuration, 0), cc.scaleTo(this.fallDuration, 0));
         node.runAction(cc.sequence(falling, finished));
     },
 

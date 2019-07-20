@@ -135,19 +135,15 @@ cc.Class({
         this.combineKeyAction.active = false;
         this.combineEffect = this.keyNode.getChildByName('combineEffect');
         this.combineEffect.active = false;
-        //this.keyNode.getChildByName('black-LShift').active = true;
-        //this.keyNode.getChildByName('black-RShift').active = false;
-        //this.keyNode.getChildByName('white-LShift').active = false;
-        //this.keyNode.getChildByName('white-RShift').active = true;
+
         // *** 结算栏初始化 ***
         this.resultNode.active = false;
-        // *** 播放背景音乐 ***
-        // this.audio.playMusic(this.audio.music1);
 
         // 一些游戏全局属性设置
         this.data.fail = false;
         this.data.gameSpeed = 5;
         this.data.score = 0;
+        this.data.hellMode = false;
     },
 
     onDestroy: function() {
@@ -166,7 +162,9 @@ cc.Class({
         if(!this.data.fail && !this.bg.noPath) {
             for(let i = this.bg.childrenCount - 1; i >= 0; --i) {
                 let childNode = this.bg.children[i];
-                if(childNode.y <= this.data.elementBaseLineY && childNode.y + childNode.height > this.data.elementBaseLineY && !childNode.falling) {
+                if(childNode.y - (childNode.height >> 1) <= this.data.elementBaseLineY 
+                && childNode.y + (childNode.height >> 1) > this.data.elementBaseLineY 
+                && !childNode.falling) {
                     if(childNode.index === this.lElementNode.pathNumber) {
                         if(childNode.colorId !== this.lElementNode.colorId) {
                             this.data.fail = true;                        
@@ -185,7 +183,7 @@ cc.Class({
         
         // 刷新分值逻辑
         this.getScore();
-        if(this.data.score % 5 === 0 && this.data.score !== 0 
+        if(this.data.score % 20 === 0 && this.data.score !== 0 
             && this.switchKey.active === true) {
             this.switchKey.active = false;
             this.combineEffect.active = true;
@@ -290,6 +288,13 @@ cc.Class({
         this.clickedRight = true;
         // 播放动画
         if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
+            // 以此为时间点进行游戏增速
+            if(this.data.gameSpeed < 9) {
+                this.data.gameSpeed++;
+            } else {
+                this.data.hellMode = true;
+            }
+            
             // 隐藏左右中间按键直至无敌状态结束
             this.combineEffect.active = false;
             this.combineKey.active = false;
@@ -311,8 +316,6 @@ cc.Class({
                 var rActive = this.whiteRShiftKey;
             }
             this.bg.noPath = true;
-            this.lElementNode.stopActionByTag(1);
-            this.rElementNode.stopActionByTag(1);
             if(this.lElementNode.pathNumber === 1) {
                 var posX1 = this.data.elementPathLineX_1;
             } else {

@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.21570312976837158,
-      "y": 0.21570312976837158,
+      "x": 0.16820313930511474,
+      "y": 0.16820313930511474,
       "z": 1
     },
     "_quat": {
@@ -161,7 +161,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Particle",
+    "_name": "chaos",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -3496,16 +3496,14 @@
     "_enabled": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_custom": true,
+    "_custom": false,
     "_file": {
       "__uuid__": "c15d3c12-9e22-41a4-8745-c9aa7ad9c545"
     },
     "_spriteFrame": {
       "__uuid__": "472df5d3-35e7-4184-9e6c-7f41bee65ee3"
     },
-    "_texture": {
-      "__uuid__": "d0a82d39-bede-46c4-b698-c81ff0dedfff"
-    },
+    "_texture": null,
     "_stopped": false,
     "playOnLoad": true,
     "autoRemoveOnFinish": false,
@@ -3517,8 +3515,8 @@
     "_startColor": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 127,
-      "b": 80,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_startColorVar": {
@@ -5392,7 +5390,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 640,
-      "height": 1280
+      "height": 1600
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

@@ -21,10 +21,14 @@ cc.Class({
             default: 0,
             type: cc.Float
         },
-        /*music1: {                   // 音乐预载，利用属性检查器加入
+        bgm: {                   // 音乐预载，利用属性检查器加入
             default: null,   
             type: cc.AudioClip
-        }*/
+        },
+        shifting: {
+            default: null,
+            type: cc.AudioClip
+        }
 
     },
 
@@ -39,6 +43,11 @@ cc.Class({
     onDestroy: function() {
         // 解除常驻节点属性
         cc.game.removePersistRootNode(this.node);
+    },
+
+    start: function() {
+        // *** 播放背景音乐 ***
+        this.playMusic(this.bgm);
     },
 
     playMusic: function (clip) {

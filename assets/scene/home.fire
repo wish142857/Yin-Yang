@@ -53,8 +53,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.21570312976837158,
-      "y": 0.21570312976837158,
+      "x": 1,
+      "y": 1,
       "z": 1
     },
     "_quat": {
@@ -3899,6 +3899,10 @@
     "current": 0,
     "musicVolume": 0,
     "effectVolume": 0,
+    "bgm": {
+      "__uuid__": "7bffa884-36fa-4e46-9c7f-a9840822dc85"
+    },
+    "shifting": null,
     "_id": "cez4ImYn5BKIjrhGslgGN+"
   },
   {
