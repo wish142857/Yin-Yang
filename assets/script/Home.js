@@ -62,6 +62,7 @@ cc.Class({
 
     startGame: function () {
         // *** 开始游戏 ***
+        this.audio.playEffect(this.audio.clickSound);
         this.animation.startGame(this.option, -this.data.screenHeight - 30);
         setTimeout(function() {
             cc.director.loadScene('game');
@@ -70,6 +71,7 @@ cc.Class({
 
     showIntroduction: function () {
         // *** 游戏介绍 ***
+        this.audio.playEffect(this.audio.clickSound);
         this.animation.startGame(this.option, -this.data.screenHeight - 30);
         setTimeout(function() {
             cc.director.loadScene('tutorial');
@@ -78,6 +80,7 @@ cc.Class({
 
     openRankingList: function() {
         // *** 显示排行 ***
+        this.audio.playEffect(this.audio.clickSound);
         this.option.pauseSystemEvents(true);
         this.rlClose.active = true;
         this.rankList.openRankingList();
@@ -85,6 +88,7 @@ cc.Class({
 
     closeRankingList: function() {
         // *** 关闭排行榜 ***
+        this.audio.playEffect(this.audio.clickSound);
         this.option.resumeSystemEvents(true);
         this.rlClose.active = false;
         this.rankList.closeRankingList();
@@ -92,6 +96,7 @@ cc.Class({
 
     exitGame: function () {
         // *** 退出游戏 ***
+        this.audio.playEffect(this.audio.clickSound);
         wx.exitMiniProgram();
     },
 

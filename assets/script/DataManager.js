@@ -53,17 +53,17 @@ cc.Class({
             tooltip: ' 丁 评价最低分'
         },
         scoreC: {
-            default: 5,
+            default: 30,
             type: cc.Integer,
             tooltip: ' 丙 评价最低分'
         },
         scoreB: {
-            default: 10,
+            default: 60,
             type: cc.Integer,
             tooltip: ' 乙 评价最低分'
         },
         scoreA: {
-            default: 20,
+            default: 100,
             type: cc.Integer,
             tooltip: ' 甲 评价最低分'
         },
@@ -73,7 +73,7 @@ cc.Class({
         }, 
         gameSpeed: {
             default: 0,
-            type: cc.Integer,
+            type: cc.Float,
             tooltip: '轨道下落速度'
         },
         score: {

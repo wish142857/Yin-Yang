@@ -25,7 +25,7 @@ cc.Class({
             default: null,   
             type: cc.AudioClip
         },
-        shifting: {
+        clickSound: {
             default: null,
             type: cc.AudioClip
         }

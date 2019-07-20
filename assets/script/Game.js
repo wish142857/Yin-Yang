@@ -182,7 +182,7 @@ cc.Class({
         // 刷新分值逻辑
         this.getScore();
         if(this.data.score % 20 === 0 && this.data.score !== 0 
-            && this.switchKey.active === true) {
+            && this.switchKey.active === true && !this.fail) {
             this.switchKey.active = false;
             this.combineEffect.active = true;
             this.combineKey.active = true;
@@ -193,10 +193,6 @@ cc.Class({
     getScore: function () {
         // *** 获取分数 ***
         this.scoreNode.getComponent(cc.Label).string = this.data.score;
-    },
-
-    increaseScore: function() {
-        this.data.score++;
     },
 
     leftShift: function () {
@@ -291,8 +287,8 @@ cc.Class({
         // 播放动画
         if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
             // 以此为时间点进行游戏增速
-            if(this.data.gameSpeed < 9) {
-                this.data.gameSpeed++;
+            if(this.data.gameSpeed < 7.5) {
+                this.data.gameSpeed += 0.5;
             } else {
                 this.data.hellMode = true;
             }
@@ -380,6 +376,7 @@ cc.Class({
     gameRestart: function() {
         // *** 游戏重开 ***
         cc.director.resume();
+        this.audio.playEffect(this.audio.clickSound);
         cc.director.loadScene('game');
     },
 
@@ -409,6 +406,7 @@ cc.Class({
 
     uploadScore() {
         // *** 上传分数 ***
+        this.audio.playEffect(this.audio.clickSound);
         // 上传数据, 参数需为字符串
         this.rankList.uploadRankingData('???', this.data.score + '');
         // 激活成功图标
@@ -420,6 +418,7 @@ cc.Class({
         this.keyNode.getChildByName('combineEffect').active = false;
         this.data.fail = true; // 不再触发update失败逻辑
         cc.director.resume();
+        this.audio.playEffect(this.audio.clickSound);
         for(let i = 0; i < this.node.childrenCount; i++) {
             if(this.node.children[i].name !== 'Shadow') {
                 this.node.children[i].runAction(cc.fadeTo(1, 0));
@@ -459,12 +458,14 @@ cc.Class({
 
     clickContinue: function () {
         // *** 按下继续按钮 游戏暂停 ***
+        this.audio.playEffect(this.audio.clickSound);
         // 背景阴影开启
         this.animation.playShadeOn(this.shade, this.gamePause.bind(this));
     },
 
     clickPause: function () {
         // *** 按下暂停按钮 游戏继续 ***
+        this.audio.playEffect(this.audio.clickSound);
         this.gameContinue();
     },
 
