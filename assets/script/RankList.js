@@ -42,23 +42,24 @@ cc.Class({
     openRankingList: function () {
         // *** 打开排行榜 ***
         // *** （对外接口） ***
-        console.log('Main: openRankingList');
+        console.log('Main: call openRankingList()');
+        this.isShow = true;
         // * 初始化 *
         this.init();
         // * 向子域发送更新信息 *
-        wx.getOpenDataContext().postMessage({ action: 'UpdateRankList' });
+        wx.getOpenDataContext().postMessage({ action: 'UpdateRankingList' });
         // * 开始刷新排行榜 *
-        // 防止子域响应慢，或者头像加载慢，每隔0.7s 绘制1次 总共绘制6次
-        this.refreshStart = true;
-        this.refreshTimeRest = 6;
-        this.refreshTimer = 0.4
-        this.refreshInterval = 0.7;
+        // 多次间隔刷新
+        this.refreshTime = 6;
+        this.refreshTimer = 0.6;
+        this.refreshInterval = 0.6;
     },
 
     closeRankingList: function() {
         // *** 关闭排行榜 ***
         // *** （对外接口） ***
-        console.log('Main: closeRankingList');
+        this.isShow = false;
+        console.log('Main: call closeRankingList()');
         // * 开始隐藏排行榜 *
         this.hide();
     },
@@ -66,17 +67,19 @@ cc.Class({
     uploadRankingData: function (username, score) {
         // *** 上传玩家数据 ***
         // *** （对外接口） ***
-        console.log('Main: uploadRankingData');
+        console.log('Main: call uploadRankingData()');
         wx.setUserCloudStorage({
             KVDataList: [{
                 key: 'username',
                 value: username
             }, {
-                'key': 'score',
+                key: 'tempScore',
                 value: score
             }],
             success: function (res) {
                 console.log(`Main: Upload Success`);
+                // 向子域发送更新信息
+                wx.getOpenDataContext().postMessage({ action: 'UpdateRankingData' });
             },
             fail: function (res) {
                 console.log(`Main: Upload Fail`);
@@ -85,12 +88,11 @@ cc.Class({
     },
 
     update: function (dt) {
-        if (this.refreshStart && this.refreshTimeRest > 0) {
-        // 每隔0.7s 绘制1次 总共绘制6次
+        if ((this.isShow) && (this.refreshTime > 0)) {
             this.refreshTimer += dt;
             if (this.refreshTimer > this.refreshInterval) {
                 this.refreshTimer -= this.refreshInterval;
-                this.refreshTimeRest--;
+                this.refreshTime--;
                 this.show();
             }
         }

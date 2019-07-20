@@ -155,7 +155,6 @@ cc.Class({
     },
 
     update: function (dt) {
-
         this.clickedLeft = false;
         this.clickedRight = false;
         // 判定死亡逻辑
@@ -180,7 +179,6 @@ cc.Class({
                 }                   
             }
         }
-        
         // 刷新分值逻辑
         this.getScore();
         if(this.data.score % 20 === 0 && this.data.score !== 0 
@@ -195,6 +193,10 @@ cc.Class({
     getScore: function () {
         // *** 获取分数 ***
         this.scoreNode.getComponent(cc.Label).string = this.data.score;
+    },
+
+    increaseScore: function() {
+        this.data.score++;
     },
 
     leftShift: function () {
@@ -407,7 +409,6 @@ cc.Class({
 
     uploadScore() {
         // *** 上传分数 ***
-        console.log('Call uploadScore()');
         // 上传数据, 参数需为字符串
         this.rankList.uploadRankingData('???', this.data.score + '');
         // 激活成功图标

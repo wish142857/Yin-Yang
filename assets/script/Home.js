@@ -78,7 +78,6 @@ cc.Class({
 
     openRankingList: function() {
         // *** 显示排行 ***
-        console.log('Call openRankingList()');
         this.option.pauseSystemEvents(true);
         this.rlClose.active = true;
         this.rankList.openRankingList();
@@ -86,7 +85,6 @@ cc.Class({
 
     closeRankingList: function() {
         // *** 关闭排行榜 ***
-        console.log('Call closeRankingList()');
         this.option.resumeSystemEvents(true);
         this.rlClose.active = false;
         this.rankList.closeRankingList();
@@ -94,7 +92,7 @@ cc.Class({
 
     exitGame: function () {
         // *** 退出游戏 ***
-        cc.log('exitGame');
+        wx.exitMiniProgram();
     },
 
     switchMute: function (isMute) {
