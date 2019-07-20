@@ -42,7 +42,7 @@ cc.Class({
     openRankingList: function () {
         // *** 打开排行榜 ***
         // *** （对外接口） ***
-        console.log('RankList: openRankingList');
+        console.log('Main: openRankingList');
         // * 初始化 *
         this.init();
         // * 向子域发送更新信息 *
@@ -58,7 +58,7 @@ cc.Class({
     closeRankingList: function() {
         // *** 关闭排行榜 ***
         // *** （对外接口） ***
-        console.log('RankList: closeRankingList');
+        console.log('Main: closeRankingList');
         // * 开始隐藏排行榜 *
         this.hide();
     },
@@ -66,19 +66,20 @@ cc.Class({
     uploadRankingData: function (username, score) {
         // *** 上传玩家数据 ***
         // *** （对外接口） ***
+        console.log('Main: uploadRankingData');
         wx.setUserCloudStorage({
             KVDataList: [{
                 key: 'username',
                 value: username
             }, {
-                key: 'score',
+                'key': 'score',
                 value: score
             }],
             success: function (res) {
-                console.log(`Upload Success`);
+                console.log(`Main: Upload Success`);
             },
             fail: function (res) {
-                console.log(`Upload Fail`);
+                console.log(`Main: Upload Fail`);
             },
         });
     },

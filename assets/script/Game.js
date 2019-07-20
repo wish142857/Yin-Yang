@@ -405,8 +405,8 @@ cc.Class({
     uploadScore() {
         // *** 上传分数 ***
         console.log('Call uploadScore()');
-        // 上传数据
-        /// this.rankList.uploadRankingData('???', this.score);
+        // 上传数据, 参数需为字符串
+        this.rankList.uploadRankingData('???', this.data.score + '');
         // 激活成功图标
         this.resultNode.getChildByName('uploadSuccess').active = true;
     },

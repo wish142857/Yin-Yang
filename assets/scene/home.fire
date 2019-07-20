@@ -53,8 +53,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0.21570312976837158,
+      "y": 0.21570312976837158,
       "z": 1
     },
     "_quat": {
@@ -4059,6 +4059,8 @@
     "scoreC": 5,
     "scoreB": 10,
     "scoreA": 20,
+    "fail": false,
+    "score": 0,
     "_id": "2526s2ALpCK5NhzWQEhi4v"
   },
   {
