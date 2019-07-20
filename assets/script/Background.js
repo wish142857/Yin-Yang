@@ -171,6 +171,7 @@ cc.Class({
                 if(!childNode.falling) {
                     this.animation.playFalling(childNode, this.recyclePath.bind(this));
                     childNode.falling = true;
+                    if(childNode.index === 1) this.data.score++; 
                 }    
             }    
         }
@@ -194,7 +195,6 @@ cc.Class({
             if(flip.join('') === '0000') {
                 flip = [1, 1, 1, 1];
             }
-            this.colorSequence = temp;
             for(let i = 0; i < 4; i++) {
                 this.colorSequence[i] = temp[i];
                 if(flip[i]) {
