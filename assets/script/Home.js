@@ -31,10 +31,6 @@ cc.Class({
         option: {                           // 选择结点引用
             default: null,
             type: cc.Node
-        },
-        rlClose: {                          // 排行榜关闭结点引用
-            default: null,
-            type: cc.Node
         }
     },
 
@@ -45,15 +41,15 @@ cc.Class({
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         this.rankList = cc.find('RankList').getComponent('RankList');
         this.option= this.node.getChildByName('option');
-        this.rlClose = this.node.getChildByName('close');
         cc.director.preloadScene('game');
         // 初始化音乐按钮（默认非静音）
         this.switchMute(false);
-        // 初始化排行榜关闭结点（默认不激活）
-        this.rlClose.active = false;
     },
 
     start: function () {
+        // 控件位置适配
+        this.node.getChildByName('music-on').y = this.data.screenHeight * 520 / 1280;
+        this.node.getChildByName('music-off').y = this.data.screenHeight * 520 / 1280;
     },
 
     update: function (dt) {
@@ -82,7 +78,6 @@ cc.Class({
         // *** 显示排行 ***
         this.audio.playEffect(this.audio.clickSound);
         this.option.pauseSystemEvents(true);
-        this.rlClose.active = true;
         this.rankList.openRankingList();
     },
 
@@ -90,7 +85,6 @@ cc.Class({
         // *** 关闭排行榜 ***
         this.audio.playEffect(this.audio.clickSound);
         this.option.resumeSystemEvents(true);
-        this.rlClose.active = false;
         this.rankList.closeRankingList();
     },
 

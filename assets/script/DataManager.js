@@ -7,6 +7,16 @@ cc.Class({
 
     properties: {
         // 参考分辨率  W: 640 H: 1280
+        screenWidth: {
+            default: 640,
+            type: cc.Integer,
+            tooltip: '设备屏幕宽度'
+        },
+        screenHeight: {
+            default: 1280,
+            type: cc.Integer,
+            tooltip: '设备屏幕高度'
+        },
         elementPathLineX_1: {
             default: -240,
             type: cc.Integer,
@@ -90,6 +100,9 @@ cc.Class({
     onLoad: function () {
         // 设置常驻节点属性
         cc.game.addPersistRootNode(this.node);
+        var screenSize = cc.winSize;
+        this.screenWidth = screenSize.width;
+        this.screenHeight = screenSize.height;
     },
 
     onDestroy: function() {
@@ -99,9 +112,7 @@ cc.Class({
 
     start: function () {
         this.paths = [, this.elementPathLineX_1, this.elementPathLineX_2, this.elementPathLineX_3, this.elementPathLineX_4];
-        var screenSize = cc.winSize;
-        this.screenWidth = screenSize.width;
-        this.screenHeight = screenSize.height;
+        
     },
 
     update: function (dt) {

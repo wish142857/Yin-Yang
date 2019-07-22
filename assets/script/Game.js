@@ -135,10 +135,8 @@ cc.Class({
         this.combineKeyAction.active = false;
         this.combineEffect = this.keyNode.getChildByName('combineEffect');
         this.combineEffect.active = false;
-
         // *** 结算栏初始化 ***
         this.resultNode.active = false;
-
         // 一些游戏全局属性设置
         this.data.fail = false;
         this.data.gameSpeed = 5;
@@ -151,7 +149,9 @@ cc.Class({
     },
 
     start: function () {
-        
+        // 控件位置适配
+        this.scoreNode.y = this.data.screenHeight * 480 / 1280;
+        this.buttonNode.y = this.data.screenHeight * 520 / 1280;
     },
 
     update: function (dt) {

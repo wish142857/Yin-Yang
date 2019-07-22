@@ -2,6 +2,8 @@
 // 排行榜脚本
 // *************************
 
+var DataManager = require('DataManager');
+
 cc.Class({
     extends: cc.Component,
 
@@ -9,7 +11,16 @@ cc.Class({
         rankSprite:{            // 精灵组件引用
             default: null,
             type: cc.Sprite
-        }
+        },
+        listClose: {            // 关闭结点引用
+            default: null,
+            type: cc.Node
+        },
+        data: {                 // 全局数据引用
+            default: null,
+            type: DataManager
+        },
+        
     },
 
     onLoad: function () {
@@ -17,11 +28,23 @@ cc.Class({
         cc.game.addPersistRootNode(this.node);
         // 精灵组件引用
         this.rankSprite = this.node.getComponent(cc.Sprite);
+        // 全局数据引用
+        this.data = cc.find('DataManager').getComponent('DataManager');
     },
 
     onDestroy: function() {
         // 解除常驻节点属性
         cc.game.removePersistRootNode(this.node);
+    },
+
+    start: function() {
+        // 控件位置适配
+        this.listClose = cc.find('ListClose');
+        this.listClose.active = false;
+        this.node.x = this.data.screenWidth / 2;
+        this.node.y = this.data.screenHeight / 2;
+        this.listClose.x = this.data.screenWidth * 560 / 640;
+        this.listClose.y = this.data.screenHeight * 1160 / 1280;
     },
     
     init: function () {
@@ -43,6 +66,7 @@ cc.Class({
         // *** 打开排行榜 ***
         // *** （对外接口） ***
         console.log('Main: call openRankingList()');
+        this.listClose.active = true;
         this.isShow = true;
         // * 初始化 *
         this.init();
@@ -50,7 +74,7 @@ cc.Class({
         wx.getOpenDataContext().postMessage({ action: 'UpdateRankingList' });
         // * 开始刷新排行榜 *
         // 多次间隔刷新
-        this.refreshTime = 6;
+        this.refreshTime = 8;
         this.refreshTimer = 0.6;
         this.refreshInterval = 0.6;
     },
@@ -58,6 +82,7 @@ cc.Class({
     closeRankingList: function() {
         // *** 关闭排行榜 ***
         // *** （对外接口） ***
+        this.listClose.active = false;
         this.isShow = false;
         console.log('Main: call closeRankingList()');
         // * 开始隐藏排行榜 *
