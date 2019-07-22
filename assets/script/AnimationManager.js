@@ -128,6 +128,12 @@ cc.Class({
         node.runAction(cc.sequence(zoomFade, finished));
     },
 
+    playSimpleFade: function(node, duration, target) {
+        // 透明度单向改变动画
+        var fade = cc.fadeTo(duration, target);
+        node.runAction(fade);
+    },
+
     playShadeOn: function(node, gamePause) {
         // *** 暂停或游戏结束菜单跳出时背景渐暗动画 *** 
         var finished = cc.callFunc(gamePause, this);

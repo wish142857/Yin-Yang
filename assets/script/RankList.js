@@ -30,6 +30,7 @@ cc.Class({
         this.rankSprite = this.node.getComponent(cc.Sprite);
         // 全局数据引用
         this.data = cc.find('DataManager').getComponent('DataManager');
+        
     },
 
     onDestroy: function() {

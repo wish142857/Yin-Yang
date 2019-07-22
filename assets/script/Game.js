@@ -98,6 +98,8 @@ cc.Class({
         this.keyNode = this.node.getChildByName('Key');
         // 结算栏引用
         this.resultNode = this.node.getChildByName('Result');
+        // 主界面静场景引用（用于过渡动画）
+        this.homeShadow = this.node.getChildByName('Shadow');
         // *** 左右元素初始化 ***
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
@@ -142,6 +144,7 @@ cc.Class({
         this.data.gameSpeed = 5;
         this.data.score = 0;
         this.data.hellMode = false;
+        
     },
 
     onDestroy: function() {
@@ -151,7 +154,9 @@ cc.Class({
     start: function () {
         // 控件位置适配
         this.scoreNode.y = this.data.screenHeight * 480 / 1280;
-        this.buttonNode.y = this.data.screenHeight * 520 / 1280;
+        this.buttonNode.y = this.data.screenHeight * 540 / 1280;
+        this.homeShadow.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
+        this.homeShadow.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
     },
 
     update: function (dt) {
@@ -256,21 +261,19 @@ cc.Class({
             this.rElementNode = tempNode;
             
             // 按键切换
-            if(this.keyNode.getChildByName('black-LShift').active) {
-                this.keyNode.getChildByName('black-LShift').active = false;
-                this.keyNode.getChildByName('white-LShift').active = true;
+            if(this.blackLShiftKey.active) {
+                this.blackLShiftKey.active = false;
+                this.whiteLShiftKey.active = true;
+            } else {
+                this.blackLShiftKey.active = true;
+                this.whiteLShiftKey.active = false;
             }
-            else {
-                this.keyNode.getChildByName('black-LShift').active = true;
-                this.keyNode.getChildByName('white-LShift').active = false;
-            }
-            if(this.keyNode.getChildByName('black-RShift').active) {
-                this.keyNode.getChildByName('black-RShift').active = false;
-                this.keyNode.getChildByName('white-RShift').active = true;
-            }
-            else {
-                this.keyNode.getChildByName('black-RShift').active = true;
-                this.keyNode.getChildByName('white-RShift').active = false;
+            if(this.blackRShiftKey.active) {
+                this.blackRShiftKey.active = false;
+                this.whiteRShiftKey.active = true;
+            } else {
+                this.blackRShiftKey.active = true;
+                this.whiteRShiftKey.active = false;
             }
             
         }
@@ -416,6 +419,16 @@ cc.Class({
     returnHome: function() {
         // *** 回到主页 ***
         this.keyNode.getChildByName('combineEffect').active = false;
+        let musicOn = this.homeShadow.getChildByName('music-on');
+        let musicOff = this.homeShadow.getChildByName('music-off');
+        if (this.audio.isMute) {
+            musicOn.active = false;
+            musicOff.active = true;
+        }
+        else {
+            musicOn.active = true;
+            musicOff.active = false;
+        }
         this.data.fail = true; // 不再触发update失败逻辑
         cc.director.resume();
         this.audio.playEffect(this.audio.clickSound);

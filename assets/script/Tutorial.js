@@ -70,7 +70,7 @@ cc.Class({
         // 引用全局动画
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         // 引用背景节点
-        this.bg = this.node.getChildByName('Background');
+        this.paths = this.node.getChildByName('paths');
         // 引用暂停界面阴影节点
         this.shade = this.node.getChildByName('Shade');
         // 引用左右元素
@@ -84,6 +84,10 @@ cc.Class({
         this.buttonNode = this.node.getChildByName('Button');
         // 按键栏引用
         this.keyNode = this.node.getChildByName('Key');
+        // 说明文字模块引用
+        this.text = this.node.getChildByName('Text');
+        // 主界面静场景引用（用于过渡动画）
+        this.homeShadow = this.node.getChildByName('Shadow');
         // *** 左右元素初始化 ***
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
@@ -95,39 +99,37 @@ cc.Class({
         this.animation.isRightMoving = false;
         this.animation.playSpin(this.lElementNode);
         this.animation.playSpin(this.rElementNode);
-        // *** 菜单栏初始化 ***
-        this.menuNode.active = false;
-        // *** 分数栏初始化 ***
-        this.scoreNode.getComponent(cc.Label).string = this.score;
         // *** 按钮栏初始化 ***
         // 初始化音乐按钮（承接全局）
         this.switchMute(this.audio.isMute);
         // *** 按键栏初始化 ***
-        this.keyNode.getChildByName('switch').active = false;
-        this.keyNode.getChildByName('black-LShift').active = true;
-        this.keyNode.getChildByName('black-RShift').active = false;
-        this.keyNode.getChildByName('white-LShift').active = false;
-        this.keyNode.getChildByName('white-RShift').active = true;
-        // 初始化暂停-继续按钮
-        this.gameContinue();
-        // *** 播放背景音乐 ***
-        // this.audio.playMusic(this.audio.music1);
+        this.switchKey = this.keyNode.getChildByName('switch');
+        this.switchKey.active = false;
+        this.blackLShiftKey = this.keyNode.getChildByName('black-LShift');
+        this.blackLShiftKey.active = true;
+        this.blackRShiftKey = this.keyNode.getChildByName('black-RShift');
+        this.blackRShiftKey.active = false;
+        this.whiteLShiftKey = this.keyNode.getChildByName('white-LShift');
+        this.whiteLShiftKey.active = false;
+        this.whiteRShiftKey = this.keyNode.getChildByName('white-RShift');
+        this.whiteRShiftKey.active = true;
+        this.leftHint = this.keyNode.getChildByName('leftHint');
         // *** 引用背景轨道块和说明文字 ***
-        this.up1 = this.node.getChildByName('up1');
-        this.up2 = this.node.getChildByName('up2');
-        this.up3 = this.node.getChildByName('up3');
-        this.up4 = this.node.getChildByName('up4');
-        this.down1 = this.node.getChildByName('down1');
-        this.down2 = this.node.getChildByName('down2');
-        this.down3 = this.node.getChildByName('down3');
-        this.down4 = this.node.getChildByName('down4');
-        this.detail1 = this.node.getChildByName('Details').getChildByName('detail1');
-        this.detail2 = this.node.getChildByName('Details').getChildByName('detail2');
-        this.detail3 = this.node.getChildByName('Details').getChildByName('detail3');
-        this.switchButton = this.keyNode.getChildByName('switch');
-        this.detail1.active = true;
-        this.detail2.active = false;
-        this.detail3.active = false;
+        this.paths = this.node.getChildByName('paths');
+        this.up1 = this.paths.getChildByName('up1');
+        this.up2 = this.paths.getChildByName('up2');
+        this.up3 = this.paths.getChildByName('up3');
+        this.up4 = this.paths.getChildByName('up4');
+        this.down1 = this.paths.getChildByName('down1');
+        this.down2 = this.paths.getChildByName('down2');
+        this.down3 = this.paths.getChildByName('down3');
+        this.down4 = this.paths.getChildByName('down4');
+        this.text = this.node.getChildByName('Text');
+        this.text1 = this.text.getChildByName('text1');
+        this.text2 = this.text.getChildByName('text2');
+        this.text3 = this.text.getChildByName('text3');
+        this.textBg = this.text.getChildByName('textBg');
+        this.textWarn = this.text.getChildByName('textWarn');
         this.stage = 1;
     },
 
@@ -135,22 +137,31 @@ cc.Class({
     },
 
     start: function () {
+        // 控件位置适配
+        this.scoreNode.y = this.data.screenHeight * 480 / 1280;
+        this.buttonNode.y = this.data.screenHeight * 540 / 1280;
+        this.homeShadow.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
+        this.homeShadow.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
     },
 
     update: function (dt) {
         this.clickedLeft = false;
         this.clickedRight = false;
-
-        if(this.leftPressed && this.rightPressed && this.stage === 1) {
-            // 左右键都按过后进入第二阶段
+        if(this.leftPressed && this.stage === 1) {
+            // 左键按过后进入第二阶段
             this.stage = 2;
-            this.detail1.active = false;
-            this.detail2.active = true;
             this.animation.playTutorialFall(this.down1);
             this.animation.playTutorialFall(this.down2);
             this.animation.playTutorialFall(this.down3);
             this.animation.playTutorialFall(this.down4);
-            this.switchButton.active = true;
+            this.text1.active = false;
+            this.textWarn.active = false;
+            this.text2.active = true;
+            this.scheduleOnce(function() {
+                this.animation.playSimpleFade(this.text, 1, 0);
+                this.switchKey.active = true;
+            }, 8)
+            
         } else if(this.stage === 2 && this.switched) {
             // 点击交换键后进入第三阶段
             this.stage = 3;
@@ -160,24 +171,30 @@ cc.Class({
             this.up2.y -= 5;
             this.up3.y -= 5;
             this.up4.y -= 5;
-            this.detail2.active = false;
-            this.detail3.active = true;
             if(this.up1.y <= -this.up1.height * 0.5) {
                 this.stage = 4;
             }
         } else if(this.stage === 4) {
-            // 背景渐隐，回到主界面
+            this.text2.active = false;
+            this.text3.active = true;
+            this.animation.playSimpleFade(this.text, 1, 255);
             this.stage = 5;
-            for(let i = 0; i < this.node.childrenCount; i++) {
-                if(this.node.children[i].name !== 'Shadow') {
-                    this.node.children[i].runAction(cc.fadeTo(1, 0));
-                } else {
-                    this.node.children[i].runAction(cc.fadeTo(1, 255));
+        } else if(this.stage === 5) {
+            // 背景渐隐，回到主界面
+            this.stage = 6;
+            this.scheduleOnce(function() {
+                for(let i = 0; i < this.node.childrenCount; i++) {
+                    if(this.node.children[i].name !== 'Shadow') {
+                        this.node.children[i].runAction(cc.fadeTo(1, 0));
+                    } else {
+                        this.node.children[i].runAction(cc.fadeTo(1, 255));
+                    }
                 }
-            }
+            }, 5);
+            
             this.scheduleOnce(function() {
                 cc.director.loadScene('home');
-            }, 1);
+            },6);
         }
     },
 
@@ -198,11 +215,17 @@ cc.Class({
             this.animation.playShift(this.lElementNode, posX, true);
         }
         this.leftPressed = true;
+        this.leftHint.active = false;
     },
 
     rightShift: function () {
         // *** 进行右切换 ***
         if(this.clickedRight) {
+            return;
+        }
+        if(this.stage === 1) {
+            this.text1.active = false;
+            this.textWarn.active = true;
             return;
         }
         // 播放动画
@@ -216,7 +239,6 @@ cc.Class({
             }
             this.animation.playShift(this.rElementNode, posX, false);
         }
-        this.rightPressed = true;
     },
 
     switch: function () {
@@ -241,76 +263,36 @@ cc.Class({
             this.rElementNode = tempNode;
 
             // 按键切换
-            if(this.keyNode.getChildByName('black-LShift').active) {
-                this.keyNode.getChildByName('black-LShift').active = false;
-                this.keyNode.getChildByName('white-LShift').active = true;
+            if(this.blackLShiftKey.active) {
+                this.blackLShiftKey.active = false;
+                this.whiteLShiftKey.active = true;
+            } else {
+                this.blackLShiftKey.active = true;
+                this.whiteLShiftKey.active = false;
             }
-            else {
-                this.keyNode.getChildByName('black-LShift').active = true;
-                this.keyNode.getChildByName('white-LShift').active = false;
-            }
-            if(this.keyNode.getChildByName('black-RShift').active) {
-                this.keyNode.getChildByName('black-RShift').active = false;
-                this.keyNode.getChildByName('white-RShift').active = true;
-            }
-            else {
-                this.keyNode.getChildByName('black-RShift').active = true;
-                this.keyNode.getChildByName('white-RShift').active = false;
+            if(this.blackRShiftKey.active) {
+                this.blackRShiftKey.active = false;
+                this.whiteRShiftKey.active = true;
+            } else {
+                this.blackRShiftKey.active = true;
+                this.whiteRShiftKey.active = false;
             }
             this.switched = true;
         }    
     },
 
-    gamePause: function() {
-        // *** 游戏暂停 ***
-        // 标记切换
-        this.isPaused = true;
-        // 菜单栏显示
-        this.menuNode.active = true;
-        // 暂停-继续按钮切换
-        this.buttonNode.getChildByName('continue').active = false;
-        this.buttonNode.getChildByName('pause').active = true;
-        // 暂停所有系统事件
-        this.node.pauseSystemEvents(true);
-        // 恢复按钮栏事件                          
-        this.buttonNode.resumeSystemEvents(true);
-        // 恢复菜单栏事件
-        this.menuNode.resumeSystemEvents(true);
-        // 暂停当前场景
-        cc.director.pause();        
-    },
-
-    gameContinue: function() {
-        // *** 游戏继续 ***
-        // 背景阴影去除
-        this.animation.playShadeOff(this.shade);
-        // 标记切换
-        this.isPaused = false;
-        // 菜单栏隐藏
-        this.menuNode.active = false;
-        // 暂停-继续按钮切换
-        this.buttonNode.getChildByName('continue').active = true;
-        this.buttonNode.getChildByName('pause').active = false;
-        // 恢复所有系统事件
-        this.node.resumeSystemEvents(true);
-        // 恢复当前场景
-        cc.director.resume();
-        
-    },
-
-    gameRestart: function() {
-        // *** 游戏重开 ***
-        this.audio.playEffect(this.audio.clickSound);
-        cc.director.loadScene('tutorial');
-    },
-
-    gameOver: function() {
-        // *** 游戏结束 ***
-        cc.director.loadScene('game');
-    },
-
     returnHome: function() {
         // *** 回到主页 ***
+        let musicOn = this.homeShadow.getChildByName('music-on');
+        let musicOff = this.homeShadow.getChildByName('music-off');
+        if (this.audio.isMute) {
+            musicOn.active = false;
+            musicOff.active = true;
+        }
+        else {
+            musicOn.active = true;
+            musicOff.active = false;
+        }
         cc.director.resume();
         this.audio.playEffect(this.audio.clickSound);
         for(let i = 0; i < this.node.childrenCount; i++) {
@@ -349,19 +331,6 @@ cc.Class({
         // *** 按下音乐按钮 切换至非静音 ***
         this.switchMute(false);
     },
-
-    clickContinue: function () {
-        // *** 按下继续按钮 游戏暂停 ***
-        this.audio.playEffect(this.audio.clickSound);
-        // 背景阴影开启
-        this.animation.playShadeOn(this.shade, this.gamePause.bind(this));
-    },
-
-    clickPause: function () {
-        // *** 按下暂停按钮 游戏继续 ***
-        this.audio.playEffect(this.audio.clickSound);
-        this.gameContinue();
-    }
 
 
 });

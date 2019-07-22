@@ -94,7 +94,7 @@ cc.Class({
         hellMode: {
             default: false,
             tooltip: '地狱模式是否开启'
-        }
+        }, 
     },
 
     onLoad: function () {

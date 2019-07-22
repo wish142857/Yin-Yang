@@ -42,14 +42,15 @@ cc.Class({
         this.rankList = cc.find('RankList').getComponent('RankList');
         this.option= this.node.getChildByName('option');
         cc.director.preloadScene('game');
-        // 初始化音乐按钮（默认非静音）
-        this.switchMute(false);
+        
     },
 
     start: function () {
         // 控件位置适配
-        this.node.getChildByName('music-on').y = this.data.screenHeight * 520 / 1280;
-        this.node.getChildByName('music-off').y = this.data.screenHeight * 520 / 1280;
+        this.node.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
+        this.node.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
+        // 初始化音乐按钮（默认非静音）
+        this.switchMute(this.audio.isMute);
     },
 
     update: function (dt) {
