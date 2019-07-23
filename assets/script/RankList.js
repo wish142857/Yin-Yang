@@ -12,15 +12,10 @@ cc.Class({
             default: null,
             type: cc.Sprite
         },
-        listClose: {            // 关闭结点引用
-            default: null,
-            type: cc.Node
-        },
         data: {                 // 全局数据引用
             default: null,
             type: DataManager
-        },
-        
+        }
     },
 
     onLoad: function () {
@@ -40,12 +35,8 @@ cc.Class({
 
     start: function() {
         // 控件位置适配
-        this.listClose = cc.find('ListClose');
-        this.listClose.active = false;
         this.node.x = this.data.screenWidth / 2;
         this.node.y = this.data.screenHeight / 2;
-        this.listClose.x = this.data.screenWidth * 560 / 640;
-        this.listClose.y = this.data.screenHeight * 1160 / 1280;
     },
     
     init: function () {
@@ -67,7 +58,6 @@ cc.Class({
         // *** 打开排行榜 ***
         // *** （对外接口） ***
         console.log('Main: call openRankingList()');
-        this.listClose.active = true;
         this.isShow = true;
         // * 初始化 *
         this.init();
@@ -83,7 +73,6 @@ cc.Class({
     closeRankingList: function() {
         // *** 关闭排行榜 ***
         // *** （对外接口） ***
-        this.listClose.active = false;
         this.isShow = false;
         console.log('Main: call closeRankingList()');
         // * 开始隐藏排行榜 *

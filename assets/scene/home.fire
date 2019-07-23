@@ -56,8 +56,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.5770333658854166,
-      "y": 0.5770333658854166,
+      "x": 0.2613476514816284,
+      "y": 0.2613476514816284,
       "z": 1
     },
     "_quat": {
@@ -3329,6 +3329,7 @@
     "animation": null,
     "data": null,
     "rankList": null,
+    "listClose": null,
     "option": null,
     "_id": "d4Po/MYu9On7Y+GQsAuEI2"
   },
@@ -3590,7 +3591,6 @@
     },
     "_enabled": true,
     "rankSprite": null,
-    "listClose": null,
     "data": null,
     "_id": "34XjEPv81PTKL2O8xVz/ns"
   },

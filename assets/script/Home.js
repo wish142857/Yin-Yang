@@ -28,6 +28,10 @@ cc.Class({
             default: null,
             type: RankList
         },
+        listClose: {                        // 关闭结点引用
+            default: null,
+            type: cc.Node
+        },
         option: {                           // 选择结点引用
             default: null,
             type: cc.Node
@@ -40,6 +44,7 @@ cc.Class({
         this.audio = cc.find('AudioManager').getComponent('AudioManager');
         this.animation = cc.find('AnimationManager').getComponent('AnimationManager');
         this.rankList = cc.find('RankList').getComponent('RankList');
+        
         this.option= this.node.getChildByName('option');
         cc.director.preloadScene('game');
         
@@ -49,6 +54,11 @@ cc.Class({
         // 控件位置适配
         this.node.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
         this.node.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
+        // 初始化排行榜关闭按钮
+        this.listClose = cc.find('ListClose');
+        this.listClose.active = false;
+        this.listClose.x = this.data.screenWidth * 560 / 640;
+        this.listClose.y = this.data.screenHeight * 1160 / 1280;
         // 初始化音乐按钮（默认非静音）
         this.switchMute(this.audio.isMute);
     },
@@ -77,6 +87,7 @@ cc.Class({
 
     openRankingList: function() {
         // *** 显示排行 ***
+        this.listClose.active = true;
         this.audio.playEffect(this.audio.clickSound);
         this.option.pauseSystemEvents(true);
         this.rankList.openRankingList();
@@ -84,6 +95,7 @@ cc.Class({
 
     closeRankingList: function() {
         // *** 关闭排行榜 ***
+        this.listClose.active = false;
         this.audio.playEffect(this.audio.clickSound);
         this.option.resumeSystemEvents(true);
         this.rankList.closeRankingList();
