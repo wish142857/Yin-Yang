@@ -56,8 +56,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.2613476514816284,
-      "y": 0.2613476514816284,
+      "x": 0.21507813930511474,
+      "y": 0.21507813930511474,
       "z": 1
     },
     "_quat": {
@@ -148,9 +148,9 @@
     "elementBaseLineY": -100,
     "gameSpeed": 5,
     "scoreD": 0,
-    "scoreC": 5,
-    "scoreB": 10,
-    "scoreA": 20,
+    "scoreC": 30,
+    "scoreB": 60,
+    "scoreA": 100,
     "fail": false,
     "score": 0,
     "hellMode": false,

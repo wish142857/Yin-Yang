@@ -140,6 +140,7 @@ cc.Class({
         // 控件位置适配
         this.scoreNode.y = this.data.screenHeight * 480 / 1280;
         this.buttonNode.y = this.data.screenHeight * 540 / 1280;
+        this.keyNode.y = this.data.screenHeight * -480 / 1280;
         this.homeShadow.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
         this.homeShadow.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
     },

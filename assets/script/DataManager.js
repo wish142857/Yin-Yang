@@ -63,17 +63,17 @@ cc.Class({
             tooltip: ' 丁 评价最低分'
         },
         scoreC: {
-            default: 30,
+            default: 0,
             type: cc.Integer,
             tooltip: ' 丙 评价最低分'
         },
         scoreB: {
-            default: 60,
+            default: 0,
             type: cc.Integer,
             tooltip: ' 乙 评价最低分'
         },
         scoreA: {
-            default: 100,
+            default: 0,
             type: cc.Integer,
             tooltip: ' 甲 评价最低分'
         },

@@ -155,6 +155,7 @@ cc.Class({
         // 控件位置适配
         this.scoreNode.y = this.data.screenHeight * 480 / 1280;
         this.buttonNode.y = this.data.screenHeight * 540 / 1280;
+        this.keyNode.y = this.data.screenHeight * -480 / 1280;
         this.homeShadow.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
         this.homeShadow.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
     },
@@ -290,9 +291,10 @@ cc.Class({
         // 播放动画
         if(this.animation.isLeftMoving === false && this.animation.isRightMoving === false) {
             // 以此为时间点进行游戏增速
-            if(this.data.gameSpeed < 7.5) {
+            if(this.data.gameSpeed < 10) {
                 this.data.gameSpeed += 0.5;
-            } else {
+            } 
+            if(this.data.gameSpeed > 7.45) {
                 this.data.hellMode = true;
             }
             
@@ -418,7 +420,7 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
-        this.keyNode.getChildByName('combineEffect').active = false;
+        this.combineEffect.active = false;
         let musicOn = this.homeShadow.getChildByName('music-on');
         let musicOff = this.homeShadow.getChildByName('music-off');
         if (this.audio.isMute) {
