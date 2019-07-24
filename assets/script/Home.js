@@ -58,7 +58,7 @@ cc.Class({
         this.listClose = cc.find('ListClose');
         this.listClose.active = false;
         this.listClose.x = this.data.screenWidth * 560 / 640;
-        this.listClose.y = this.data.screenHeight * 1160 / 1280;
+        this.listClose.y = this.data.screenHeight * 1050 / 1280;
         // 初始化音乐按钮（默认非静音）
         this.switchMute(this.audio.isMute);
     },
