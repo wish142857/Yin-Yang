@@ -58,9 +58,11 @@ cc.Class({
         this.listClose = cc.find('ListClose');
         this.listClose.active = false;
         this.listClose.x = this.data.screenWidth * 560 / 640;
-        this.listClose.y = this.data.screenHeight * 1050 / 1280;
+        this.listClose.y = this.data.screenHeight * 1100 / 1280;
         // 初始化音乐按钮（默认非静音）
         this.switchMute(this.audio.isMute);
+        // 初始分数上传
+        this.rankList.uploadRankingData('???', '0');
     },
 
     update: function (dt) {
