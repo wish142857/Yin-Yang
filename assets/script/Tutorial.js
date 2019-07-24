@@ -126,7 +126,8 @@ cc.Class({
         this.down4 = this.paths.getChildByName('down4');
         this.text = this.node.getChildByName('Text');
         this.text1 = this.text.getChildByName('text1');
-        this.text2 = this.text.getChildByName('text2');
+        this.text2_1 = this.text.getChildByName('text2-1');
+        this.text2_2 = this.text.getChildByName('text2-2');
         this.text3 = this.text.getChildByName('text3');
         this.textBg = this.text.getChildByName('textBg');
         this.textWarn = this.text.getChildByName('textWarn');
@@ -157,13 +158,19 @@ cc.Class({
             this.animation.playTutorialFall(this.down4);
             this.text1.active = false;
             this.textWarn.active = false;
-            this.text2.active = true;
+            this.text2_1.active = true;
             this.scheduleOnce(function() {
-                this.animation.playSimpleFade(this.text, 1, 0);
-                this.switchKey.active = true;
-            }, 8)
+                this.animation.playSimpleFade(this.text, 1, 0);  
+                this.scheduleOnce(function() {
+                    this.text2_1.active = false;
+                    this.text2_2.active = true;
+                    this.animation.playSimpleFade(this.text, 1, 255);
+                    this.switchKey.active = true;                    
+                }, 1)
+            }, 3)
             
         } else if(this.stage === 2 && this.switched) {
+            this.animation.playSimpleFade(this.text, 1, 0);
             // 点击交换键后进入第三阶段
             this.stage = 3;
         } else if(this.stage === 3) {
@@ -176,7 +183,7 @@ cc.Class({
                 this.stage = 4;
             }
         } else if(this.stage === 4) {
-            this.text2.active = false;
+            this.text2_2.active = false;
             this.text3.active = true;
             this.animation.playSimpleFade(this.text, 1, 255);
             this.stage = 5;

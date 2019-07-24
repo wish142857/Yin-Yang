@@ -56,8 +56,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.21507813930511474,
-      "y": 0.21507813930511474,
+      "x": 0.21570312976837158,
+      "y": 0.21570312976837158,
       "z": 1
     },
     "_quat": {
@@ -1036,7 +1036,7 @@
     },
     "component": "",
     "_componentId": "c2446og3elM36F8cMoco/rW",
-    "handler": "startGame",
+    "handler": "showIntroduction",
     "customEventData": ""
   },
   {
@@ -1532,7 +1532,7 @@
     },
     "component": "",
     "_componentId": "c2446og3elM36F8cMoco/rW",
-    "handler": "showIntroduction",
+    "handler": "startGame",
     "customEventData": ""
   },
   {
