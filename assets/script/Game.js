@@ -99,7 +99,7 @@ cc.Class({
         // 结算栏引用
         this.resultNode = this.node.getChildByName('Result');
         // 主界面静场景引用（用于过渡动画）
-        this.homeShadow = this.node.getChildByName('Shadow');
+        this.homeShadow = this.node.getChildByName('Shadow').getChildByName('widgets');
         // *** 左右元素初始化 ***
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
@@ -152,6 +152,7 @@ cc.Class({
     },
 
     start: function () {
+        this.audio.playMusic(this.audio.bgm);
         // 控件位置适配
         this.scoreNode.y = this.data.screenHeight * 480 / 1280;
         this.buttonNode.y = this.data.screenHeight * 540 / 1280;
@@ -297,6 +298,10 @@ cc.Class({
             if(this.data.gameSpeed > 7.45) {
                 this.data.hellMode = true;
             }
+            if(this.data.gameSpeed > 5.95) {
+                this.bg.grayLength = 400;
+                this.bg.pathLength = 200;
+            }
             
             // 隐藏左右中间按键直至无敌状态结束
             this.combineEffect.active = false;
@@ -436,11 +441,14 @@ cc.Class({
         this.audio.playEffect(this.audio.clickSound);
         for(let i = 0; i < this.node.childrenCount; i++) {
             if(this.node.children[i].name !== 'Shadow') {
-                this.node.children[i].runAction(cc.fadeTo(1, 0));
+                //this.node.children[i].runAction(cc.fadeTo(1, 0));
+                this.node.children[i].opacity = 0;
             } else {
-                this.node.children[i].runAction(cc.fadeTo(1, 255));
+                this.node.children[i].active = true;
+                //this.node.children[i].getChildByName('widgets').runAction(cc.fadeTo(1, 255));
             }
         }
+        this.homeShadow.runAction(cc.fadeTo(1, 255));
         this.scheduleOnce(function() {
             cc.director.loadScene('home');
         }, 1);

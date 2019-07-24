@@ -25,6 +25,10 @@ cc.Class({
             default: null,   
             type: cc.AudioClip
         },
+        home: {
+            default: null,   
+            type: cc.AudioClip
+        },
         clickSound: {
             default: null,
             type: cc.AudioClip
@@ -47,7 +51,7 @@ cc.Class({
 
     start: function() {
         // *** 播放背景音乐 ***
-        this.playMusic(this.bgm);
+        //this.playMusic(this.bgm);
     },
 
     playMusic: function (clip) {

@@ -87,7 +87,7 @@ cc.Class({
         // 说明文字模块引用
         this.text = this.node.getChildByName('Text');
         // 主界面静场景引用（用于过渡动画）
-        this.homeShadow = this.node.getChildByName('Shadow');
+        this.homeShadow = this.node.getChildByName('Shadow').getChildByName('widgets');
         // *** 左右元素初始化 ***
         this.lElementNode.position = cc.v2(this.data.elementPathLineX_2, this.data.elementBaseLineY);
         this.rElementNode.position = cc.v2(this.data.elementPathLineX_3, this.data.elementBaseLineY);
@@ -190,7 +190,7 @@ cc.Class({
         } else if(this.stage === 5) {
             // 背景渐隐，回到主界面
             this.stage = 6;
-            this.scheduleOnce(function() {
+            /*this.scheduleOnce(function() {
                 for(let i = 0; i < this.node.childrenCount; i++) {
                     if(this.node.children[i].name !== 'Shadow') {
                         this.node.children[i].runAction(cc.fadeTo(1, 0));
@@ -198,11 +198,12 @@ cc.Class({
                         this.node.children[i].runAction(cc.fadeTo(1, 255));
                     }
                 }
-            }, 5);
+            }, 5);*/
             
             this.scheduleOnce(function() {
-                cc.director.loadScene('home');
-            },6);
+                //cc.director.loadScene('home');
+                this.returnHome();
+            },5);
         }
     },
 
@@ -291,6 +292,7 @@ cc.Class({
 
     returnHome: function() {
         // *** 回到主页 ***
+        this.stage = 6;
         let musicOn = this.homeShadow.getChildByName('music-on');
         let musicOff = this.homeShadow.getChildByName('music-off');
         if (this.audio.isMute) {
@@ -301,15 +303,17 @@ cc.Class({
             musicOn.active = true;
             musicOff.active = false;
         }
-        cc.director.resume();
-        this.audio.playEffect(this.audio.clickSound);
+        this.text.active = false;
         for(let i = 0; i < this.node.childrenCount; i++) {
             if(this.node.children[i].name !== 'Shadow') {
-                this.node.children[i].runAction(cc.fadeTo(1, 0));
+                //this.node.children[i].runAction(cc.fadeTo(1, 0));
+                this.node.children[i].opacity = 0;
             } else {
-                this.node.children[i].runAction(cc.fadeTo(1, 255));
+                this.node.children[i].active = true;
+                //this.node.children[i].getChildByName('widgets').runAction(cc.fadeTo(1, 255));
             }
         }
+        this.homeShadow.runAction(cc.fadeTo(1, 255));
         this.scheduleOnce(function() {
             cc.director.loadScene('home');
         }, 1);
@@ -340,6 +344,9 @@ cc.Class({
         this.switchMute(false);
     },
 
+    clickSound: function() {
+        this.audio.playEffect(this.audio.clickSound);
+    }
 
 });
 

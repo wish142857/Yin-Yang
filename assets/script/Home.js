@@ -51,6 +51,7 @@ cc.Class({
     },
 
     start: function () {
+        this.audio.playMusic(this.audio.home);
         // 控件位置适配
         this.node.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
         this.node.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
@@ -72,10 +73,10 @@ cc.Class({
     startGame: function () {
         // *** 开始游戏 ***
         this.audio.playEffect(this.audio.clickSound);
-        this.animation.startGame(this.option, -this.data.screenHeight - 30);
+        this.animation.startGame(this.option, -this.data.screenHeight * 0.5 - 30);
         setTimeout(function() {
             cc.director.loadScene('game');
-        }, 1501);
+        }, this.animation.pullDownDuration * 1000);
     },
 
     showIntroduction: function () {
