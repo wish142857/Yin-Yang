@@ -51,7 +51,6 @@ cc.Class({
     },
 
     start: function () {
-        this.audio.playMusic(this.audio.home);
         // 控件位置适配
         this.node.getChildByName('music-on').y = this.data.screenHeight * 540 / 1280;
         this.node.getChildByName('music-off').y = this.data.screenHeight * 540 / 1280;
@@ -72,7 +71,6 @@ cc.Class({
 
     startGame: function () {
         // *** 开始游戏 ***
-        this.audio.playEffect(this.audio.clickSound);
         this.animation.startGame(this.option, -this.data.screenHeight * 0.5 - 30);
         setTimeout(function() {
             cc.director.loadScene('game');
@@ -81,7 +79,6 @@ cc.Class({
 
     showIntroduction: function () {
         // *** 游戏介绍 ***
-        this.audio.playEffect(this.audio.clickSound);
         this.animation.startGame(this.option, -this.data.screenHeight - 30);
         setTimeout(function() {
             cc.director.loadScene('tutorial');
@@ -91,7 +88,6 @@ cc.Class({
     openRankingList: function() {
         // *** 显示排行 ***
         this.listClose.active = true;
-        this.audio.playEffect(this.audio.clickSound);
         this.option.pauseSystemEvents(true);
         this.rankList.openRankingList();
     },
@@ -99,7 +95,6 @@ cc.Class({
     closeRankingList: function() {
         // *** 关闭排行榜 ***
         this.listClose.active = false;
-        this.audio.playEffect(this.audio.clickSound);
         this.option.resumeSystemEvents(true);
         this.rankList.closeRankingList();
     },
@@ -133,5 +128,9 @@ cc.Class({
     clickMusicOff: function () {
         // *** 按下音乐按钮 切换至非静音 ***
         this.switchMute(false);
+    },
+
+    clickSoundTriggered: function() {
+        this.audio.playEffect(this.audio.clickSound);
     }
 });

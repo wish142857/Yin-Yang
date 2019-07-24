@@ -114,6 +114,7 @@ cc.Class({
         this.whiteRShiftKey = this.keyNode.getChildByName('white-RShift');
         this.whiteRShiftKey.active = true;
         this.leftHint = this.keyNode.getChildByName('leftHint');
+        this.middleHint = this.keyNode.getChildByName('middleHint');
         // *** 引用背景轨道块和说明文字 ***
         this.paths = this.node.getChildByName('paths');
         this.up1 = this.paths.getChildByName('up1');
@@ -165,7 +166,8 @@ cc.Class({
                     this.text2_1.active = false;
                     this.text2_2.active = true;
                     this.animation.playSimpleFade(this.text, 1, 255);
-                    this.switchKey.active = true;                    
+                    this.switchKey.active = true;
+                    this.middleHint.active = true;                    
                 }, 1)
             }, 3)
             
@@ -288,6 +290,7 @@ cc.Class({
             }
             this.switched = true;
         }    
+        this.middleHint.active = false;
     },
 
     returnHome: function() {
@@ -344,7 +347,7 @@ cc.Class({
         this.switchMute(false);
     },
 
-    clickSound: function() {
+    clickSoundTriggered: function() {
         this.audio.playEffect(this.audio.clickSound);
     }
 

@@ -152,7 +152,6 @@ cc.Class({
     },
 
     start: function () {
-        this.audio.playMusic(this.audio.bgm);
         // 控件位置适配
         this.scoreNode.y = this.data.screenHeight * 480 / 1280;
         this.buttonNode.y = this.data.screenHeight * 540 / 1280;
@@ -386,7 +385,6 @@ cc.Class({
     gameRestart: function() {
         // *** 游戏重开 ***
         cc.director.resume();
-        this.audio.playEffect(this.audio.clickSound);
         cc.director.loadScene('game');
     },
 
@@ -416,7 +414,6 @@ cc.Class({
 
     uploadScore() {
         // *** 上传分数 ***
-        this.audio.playEffect(this.audio.clickSound);
         // 上传数据, 参数需为字符串
         this.rankList.uploadRankingData('???', this.data.score + '');
         // 激活成功图标
@@ -438,7 +435,6 @@ cc.Class({
         }
         this.data.fail = true; // 不再触发update失败逻辑
         cc.director.resume();
-        this.audio.playEffect(this.audio.clickSound);
         for(let i = 0; i < this.node.childrenCount; i++) {
             if(this.node.children[i].name !== 'Shadow') {
                 //this.node.children[i].runAction(cc.fadeTo(1, 0));
@@ -481,21 +477,21 @@ cc.Class({
 
     clickContinue: function () {
         // *** 按下继续按钮 游戏暂停 ***
-        this.audio.playEffect(this.audio.clickSound);
         // 背景阴影开启
         this.animation.playShadeOn(this.shade, this.gamePause.bind(this));
     },
 
     clickPause: function () {
         // *** 按下暂停按钮 游戏继续 ***
-        this.audio.playEffect(this.audio.clickSound);
         this.gameContinue();
     },
 
     beforeGameOver: function() {
         this.buttonNode.opacity = 50;
         this.animation.playShadeOn(this.shade, this.gameOver.bind(this));
+    },
+
+    clickSoundTriggered: function() {
+        this.audio.playEffect(this.audio.clickSound);
     }
-
-
 });
