@@ -97,7 +97,7 @@ cc.Class({
 
   start: function () {
     // *** 数据初始化 ***
-    this.paths = [this.elementPathLineX_1, this.elementPathLineX_2, this.elementPathLineX_3, this.elementPathLineX_4]
+    this.paths = [0, this.elementPathLineX_1, this.elementPathLineX_2, this.elementPathLineX_3, this.elementPathLineX_4]
   }
 
 })
