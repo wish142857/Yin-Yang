@@ -167,6 +167,7 @@ cc.Class({
       }, 3)
     } else if (this.stage === 2 && this.switched) {
       this.animation.playSimpleFade(this.text, 1, 0)
+      this.keyNode.active = false
       // 点击交换键后进入第三阶段
       this.stage = 3
     } else if (this.stage === 3) {
