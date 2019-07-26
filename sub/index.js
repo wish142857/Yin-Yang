@@ -24,7 +24,11 @@ class RankList {
           break
         case 'UpdateRankingList':
           console.log(`Sub: call this.updateRankList()`)
-          this.updateRankList() // 开始更新排行榜
+          this.updateRankList() // 开始更新绘制排行榜
+          break
+        case 'ClearRankingData':
+          console.log(`Sub: call this.clearRankList()`)
+          this.clearRankList()  // 开始清除排行数据
           break
         default:
           console.log(`Sub: unknown msg.action = ${msg.action}`)
@@ -218,6 +222,18 @@ class RankList {
     this.context.fillText('- 暂无数据 -', 230, 455)
     this.context.fillText('- 暂无数据 -', 230, 570)
     this.context.fillText('- 暂无数据 -', 230, 685)
+  }
+
+  clearRankList() {
+    wx.removeUserCloudStorage({
+      keyList: ['score', 'tempScore'],
+      success: (res) => {
+      console.log(`Sub: clearRankList success`, res);
+      },
+      fail: (res) => {
+      console.log(`Sub: clearRankList fail`, res);
+      }
+  })
   }
 }
 

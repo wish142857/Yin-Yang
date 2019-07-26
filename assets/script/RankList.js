@@ -54,6 +54,7 @@ cc.Class({
   },
 
   openRankingList: function () {
+    if (cc.sys.platform !== cc.sys.WECHAT_GAME) return
     // *** 打开排行榜 ***
     // *** （对外接口） ***
     console.log('Main: call openRankingList()')
@@ -70,6 +71,7 @@ cc.Class({
   },
 
   closeRankingList: function () {
+    if (cc.sys.platform !== cc.sys.WECHAT_GAME) return
     // *** 关闭排行榜 ***
     // *** （对外接口） ***
     this.isShow = false
@@ -79,6 +81,7 @@ cc.Class({
   },
 
   uploadRankingData: function (username, score) {
+    if (cc.sys.platform !== cc.sys.WECHAT_GAME) return
     // *** 上传玩家数据 ***
     // *** （对外接口） ***
     console.log('Main: call uploadRankingData()')
@@ -99,6 +102,14 @@ cc.Class({
         console.log(`Main: Upload Fail`)
       }
     })
+  },
+
+  clearRankingData: function () {
+    if (cc.sys.platform !== cc.sys.WECHAT_GAME) return
+    // *** 清除玩家数据 ***
+    // *** （对外接口） ***
+    console.log('Main: call clearRankingData()')
+    wx.getOpenDataContext().postMessage({ action: 'ClearRankingData' })
   },
 
   update: function (dt) {

@@ -95,7 +95,7 @@ cc.Class({
   exitGame: function () {
     // *** 退出游戏 ***
     this.audio.playEffect(this.audio.clickSound)
-    wx.exitMiniProgram()
+    if (cc.sys.platform === cc.sys.WECHAT_GAME) { wx.exitMiniProgram() }
   },
 
   switchMute: function (isMute) {
