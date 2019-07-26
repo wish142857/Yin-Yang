@@ -422,11 +422,9 @@ cc.Class({
     cc.director.resume()
     for (let i = 0; i < this.node.childrenCount; i++) {
       if (this.node.children[i].name !== 'Shadow') {
-        // this.node.children[i].runAction(cc.fadeTo(1, 0));
         this.node.children[i].opacity = 0
       } else {
         this.node.children[i].active = true
-        // this.node.children[i].getChildByName('widgets').runAction(cc.fadeTo(1, 255));
       }
     }
     this.homeShadow.runAction(cc.fadeTo(1, 255))
